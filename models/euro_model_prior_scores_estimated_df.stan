@@ -6,6 +6,8 @@ data {
   vector[ngames] score1;
   vector[ngames] score2;
   vector[nteams] prior_score;
+  real b_mean;
+  real b_sd;
 }
 transformed data {
   vector[ngames] dif;
@@ -30,6 +32,7 @@ transformed parameters {
   a = b*prior_score + sigma_a*eta_a;
 }  
 model {
+  b ~ normal(b_mean, b_sd);
   df ~ gamma(2,0.1);
   eta_a ~ normal(0,1);
   for (i in 1:ngames)

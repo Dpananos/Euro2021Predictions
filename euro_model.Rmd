@@ -1,83 +1,88 @@
 ---
-title: "Euro 2⁄⁄021 Model"
+title: "Euro 2021 Model"
 ---
 
 
-```{r}
+```{r data-prep}
 library(tidyverse)
 library(readxl)
 library(cmdstanr)
 library(tidybayes)
 library(posterior)
 library(viridis)
+cmdstanr::register_knitr_engine(override = F)
 
 #Prior rankings using points here https://www.fifa.com/fifa-world-ranking/ranking-table/men/
 
-cmdstanr::register_knitr_engine(override = F)
-euro_data = read_xlsx('data/euro_results.xlsx')
-ranking_data = read_xlsx('data/rankings.xlsx')
-pts = ranking_data$pts
 
-# Check data quality
+#Load in data
+euro_data = read_xlsx('data/euro_results.xlsx')
+ranking_data = read_xlsx('data/rankings.xlsx') %>% 
+               mutate(prior_score = (pts - mean(pts))/sd(pts)) %>% 
+               arrange(team)
+
+# extract data for model
 teams = ranking_data$team
-prior_score = (pts - mean(pts))/(2*sd(pts))
 nteams = length(teams)
 ngames = nrow(euro_data)
 team1 = match(as.vector(euro_data[[1]]), teams)
 team2 = match(as.vector(euro_data[[3]]), teams)
 score1 = as.vector(euro_data[[2]])
 score2 = as.vector(euro_data[[4]])
+# Used for some models, not all
 df = 7
+b_mean = 0
+b_sd = 0.1
+prior_score = ranking_data$prior_score
 
-
-
-
-```
-
-
-```{r}
+# Store data in a list to pass to Stan
 model_data = list(
-  nteams=nteams, ngames=ngames, team1=team1, team2=team2, score1=score1, score2=score2, df=df, prior_score=prior_score
+  nteams = nteams,
+  ngames = ngames,
+  team1 = team1,
+  team2 = team2,
+  score1 = score1,
+  score2 = score2,
+  df = df,
+  prior_score = prior_score,
+  b_mean = b_mean,
+  b_sd = b_sd
 )
+
 ```
 
 
-```{r}
-group_a_teams = tibble(team = c('Italy','Switzerland','Turkey','Wales'), group = 'A')
-group_b_teams = tibble(team = c('Belgium','Denmark','Finland','Russia'), group = 'B' )
-group_c_teams = tibble(team = c('Austria','Netherlands','North Macedonia', 'Ukraine'), group = 'C')
-group_d_teams = tibble(team = c('Croatia', 'Czech', 'England', 'Scotland'), group = 'D' )
-group_e_teams = tibble(team = c('Poland', 'Slovakia','Spain', 'Sweden'), group = 'E' )
-group_f_teams = tibble(team = c('France','Germany','Hungary','Portugal'), group = 'F')
-groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, group_e_teams, group_f_teams) %>% 
-         mutate(i = seq_along(team))
 
-
-
+```{r model-fit}
+# Instantiate model and run sampling.
 model = cmdstan_model('models/euro_model_prior_scores_estimated_df.stan')
 fit = model$sample(model_data, parallel_chains=4, seed=19920908)
+```
 
+
+```{r examine-new-ranks}
+# Take a look at latent ability ranking.
+ability = fit$draws('a') %>% 
+          as_draws_df %>% 
+          spread_draws(a[i]) 
+# Need something to join ability samples to
 team_i = tibble(team = str_to_title(teams), i = seq_along(team))
 
-quality = fit$draws('a') %>% 
-  as_draws_df %>% 
-  spread_draws(a[i]) 
-
-
-top_to_bottom = quality %>% 
+# Used in ordering outcomes
+top_to_bottom = ability %>% 
   mean_qi() %>% 
   left_join(team_i) %>% 
   arrange(a) %>% 
   pull(team)
 
-quality %>% 
+# Forest-like plot of ability.  Belgium seems like the team to beat.
+ability %>% 
   left_join(team_i) %>% 
-  filter(team %in% groups$team) %>% 
   mutate(team = factor(team, levels = top_to_bottom, ordered = T)) %>% 
   ggplot(aes(a, team))+
-  stat_histinterval()+
+  stat_interval()+
   theme(aspect.ratio = 1.61)+
-  labs(x = 'Latent Ability (Unitless)')->qual_plot
+  labs(x = 'Latent Ability (Unitless)')
 
 ```
 
@@ -85,12 +90,14 @@ quality %>%
 
 
 
-```{r}
+```{r predict-funcs}
 
 a = fit$draws('a') %>% as_draws_df
 sigma_y = fit$draws('sigma_y')
 est_df = fit$draws('df')
+
 goal_diff = function(teamA, teamB){
+  set.seed(0)
   ixa = match(teamA, str_to_title(teams))
   ixb = match(teamB, str_to_title(teams))
   ai = a[, ixa]
@@ -108,24 +115,37 @@ prob_win = function(teamA, teamB){
 
 predict = function(teamA, teamB){
   gd = goal_diff(teamA, teamB)
-  outcomes = case_when()
-}
+  outcome_space = tibble(outcome = c('A Wins', 'B Wins', 'Draw'),
+                         result = c(1, -1, 0))
+  
+  gdr = case_when(gd<0~-1, gd>0~1, T~0)
+  
+  tibble(result = gdr) %>% 
+    right_join(outcome_space) %>% 
+    group_by(outcome) %>% 
+    summarise(n = n()) %>% 
+    mutate(n = n/sum(n)) %>% 
+    spread(outcome, n)
+  
 
+}
 ```
 
 
 
 
 ```{r}
+# Construct groups for predicting results of the group stage
 group_a_teams = tibble(team = c('Italy','Switzerland','Turkey','Wales'), group = 'A')
 group_b_teams = tibble(team = c('Belgium','Denmark','Finland','Russia'), group = 'B' )
 group_c_teams = tibble(team = c('Austria','Netherlands','North Macedonia', 'Ukraine'), group = 'C')
 group_d_teams = tibble(team = c('Croatia', 'Czech', 'England', 'Scotland'), group = 'D' )
 group_e_teams = tibble(team = c('Poland', 'Slovakia','Spain', 'Sweden'), group = 'E' )
 group_f_teams = tibble(team = c('France','Germany','Hungary','Portugal'), group = 'F')
+
+# Combine individual group dataframes into a single dataframe.
 groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, group_e_teams, group_f_teams) %>% 
          mutate(i = seq_along(team))
-
 
 
 plot_data = full_join(groups, groups, by='group') %>% 
@@ -160,33 +180,53 @@ ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
 ```
 
 
-```{r}
-difs = score1 - score2
-yppc = fit$draws('yppc') %>% as_draws_matrix()
-
-bayesplot::ppc_dens_overlay(difs, yppc[1:100,])
-```
-
-
-
-
 
 ```{r}
-yppc = fit$draws('yppc') %>% 
-  as_draws_df() %>% 
-  spread_draws(yppc[i]) %>% 
-  median_qi()
-
-euro_data %>% 
-  bind_cols(yppc) %>% 
-  mutate(match = str_c(str_to_title(team...1), str_to_title(team...3), sep = ' v. ')) %>% 
-  mutate(a_obs = score...2 - score...4) %>% 
-  mutate(cov = (a_obs<.upper)&(.lower<a_obs)) %>% 
-  pull(cov) %>% 
-  mean
+plot_data %>% 
+  filter(i.x<i.y) %>% 
+  select(Group, team.x, team.y) %>% 
+  rename(teamA = team.x, teamB = team.y) %>% 
+  mutate(prediction = map2(teamA, teamB, predict)) %>% 
+  unnest(prediction) %>% 
+  write_csv('predictions/predictions.csv')
+  
 ```
 
+```{r}
 
+teamA = 'Belgium'
+teamB = 'England'
 
+score_plot = function(teamA, teamB){
+  bar_order = c('-4 or less', '-3', '-2', '-1', '0', '1', '2', '3', '4 or more')
+result = c(rep(str_c(teamB, ' Wins'), 4), 'Draw', rep(str_c(teamA, ' Wins'),4))
+result_order = c(str_c(teamB, ' Wins'), 'Draw', str_c(teamA, ' Wins'))
+bins = tibble(bins = factor(bar_order, levels = bar_order, ordered = T), result = factor(result, ordered = T, levels = result_order))
 
+goal_diff(teamA, teamB) %>% 
+  tibble(gd = .) %>% 
+  mutate(differential = case_when(gd<=-4~'-4 or less', gd>=4~'4 or more', T~as.character(gd)),
+         bins = factor(differential, levels = bar_order, ordered = T)) %>% 
+  right_join(bins) %>% 
+  count(bins, result) %>% 
+  mutate(n = n/sum(n),
+         labels = if_else(n<0.001, '<0.1%', scales::percent(n, accuracy = 0.1))) %>% 
+  ggplot()+
+  geom_col(aes(bins, n, fill = result))+
+  geom_text(aes(bins, n, label = labels), nudge_y = 0.02)+
+  theme_light()+
+  scale_y_continuous(labels = scales::percent)+
+  scale_fill_brewer(palette = 'Set1', direction = -1)+
+  theme(legend.position = 'bottom')+
+  labs(x = 'Score Differential',
+       y = 'Posterior Probability',
+       fill = '',
+       title = str_c('Estimated Score Differential between ', teamA, ' and ', teamB),
+       subtitle = str_c('Positive differential means ', teamA, ' scores more'))
+
+}
+
+score_plot('Italy','Turkey')
+
+```
 
