@@ -1,0 +1,219 @@
+---
+title: "Euro @021 Model"
+---
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(cmdstanr)
+library(tidybayes)
+library(posterior)
+library(viridis)
+cmdstanr::register_knitr_engine(override = F)
+euro_data = read_xlsx('data/euro_results.xlsx')
+
+# Check data quality
+teams = sort(unique(c(euro_data$team...1, euro_data$team...3)))
+nteams = length(teams)
+ngames = nrow(euro_data)
+team1 = match(as.vector(euro_data[[1]]), teams)
+team2 = match(as.vector(euro_data[[3]]), teams)
+score1 = as.vector(euro_data[[2]])
+score2 = as.vector(euro_data[[4]])
+df = 7
+
+model_data = list(
+  nteams=nteams, ngames=ngames, team1=team1, team2=team2, score1=score1, score2=score2, df=df
+)
+```
+
+
+```{r}
+'''data {
+  int nteams;
+  int ngames;
+  int team1[ngames];
+  int team2[ngames];
+  vector[ngames] score1;
+  vector[ngames] score2;
+  real df;
+}
+transformed data {
+  vector[ngames] dif;
+  vector[ngames] sqrt_dif;
+  dif = score1 - score2;
+  for (i in 1:ngames)
+    sqrt_dif[i] = 2*(step(dif[i]) - .5)*sqrt(fabs(dif[i]));
+}
+parameters {
+  real<lower=0> sigma_a;
+  real<lower=0> sigma_y;
+  vector[nteams] eta_a;
+}
+transformed parameters {
+  vector[nteams] a;
+  a = sigma_a*eta_a;
+}  
+model {
+  eta_a ~ normal(0,1);
+  for (i in 1:ngames)
+    sqrt_dif[i] ~ student_t(df, a[team1[i]]-a[team2[i]], sigma_y);
+}
+generated quantities{
+  real yppc[ngames];
+  real sgn;
+  for (i in 1:ngames){
+    sgn = (a[team1[i]] < a[team2[i]]) ? -1 : 1;
+    yppc[i] = round(sgn*pow(student_t_rng(df, a[team1[i]]-a[team2[i]], sigma_y ),2));
+  }
+    
+}
+'''
+```
+
+```{r}
+group_a_teams = tibble(team = c('Italy','Switzerland','Turkey','Wales'), group = 'A')
+group_b_teams = tibble(team = c('Belgium','Denmark','Finland','Russia'), group = 'B' )
+group_c_teams = tibble(team = c('Austria','Netherlands','North Macedonia', 'Ukraine'), group = 'C')
+group_d_teams = tibble(team = c('Croatia', 'Czech', 'England', 'Scotland'), group = 'D' )
+group_e_teams = tibble(team = c('Poland', 'Slovakia','Spain', 'Sweden'), group = 'E' )
+group_f_teams = tibble(team = c('France','Germany','Hungary','Portugal'), group = 'F')
+groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, group_e_teams, group_f_teams) %>% 
+         mutate(i = seq_along(team))
+
+
+
+no_prior_model = cmdstan_model('models/euro_model.stan')
+fit = no_prior_model$sample(model_data, parallel_chains = 4)
+
+team_i = tibble(team = str_to_title(teams), i = seq_along(team))
+
+quality = fit$draws('a') %>% 
+  as_draws_df %>% 
+  spread_draws(a[i]) 
+
+
+top_to_bottom = quality %>% 
+  mean_qi() %>% 
+  left_join(team_i) %>% 
+  arrange(a) %>% 
+  pull(team)
+
+quality %>% 
+  left_join(team_i) %>% 
+  filter(team %in% groups$team) %>% 
+  mutate(team = factor(team, levels = top_to_bottom, ordered = T)) %>% 
+  ggplot(aes(a, team))+
+  stat_pointinterval()+
+  theme(aspect.ratio = 1.61)
+
+```
+
+
+
+
+
+```{r}
+
+a = fit$draws('a') %>% as_draws_df
+sigma_y = fit$draws('sigma_y')
+
+goal_diff = function(teamA, teamB){
+  ixa = match(teamA, str_to_title(teams))
+  ixb = match(teamB, str_to_title(teams))
+  ai = a[, ixa]
+  aj = a[, ixb]
+  random_outcome_on_sqrt = (ai - aj) + rt(nrow(ai-ai), df)*sigma_y
+  random_outcome = sign(ai-aj)*(random_outcome_on_sqrt)^2
+  pull(random_outcome)
+  
+}
+
+prob_win = function(teamA, teamB){
+  random_outcome = goal_diff(teamA, teamB)
+  mean(random_outcome>0)
+}
+
+```
+
+
+
+
+```{r}
+group_a_teams = tibble(team = c('Italy','Switzerland','Turkey','Wales'), group = 'A')
+group_b_teams = tibble(team = c('Belgium','Denmark','Finland','Russia'), group = 'B' )
+group_c_teams = tibble(team = c('Austria','Netherlands','North Macedonia', 'Ukraine'), group = 'C')
+group_d_teams = tibble(team = c('Croatia', 'Czech', 'England', 'Scotland'), group = 'D' )
+group_e_teams = tibble(team = c('Poland', 'Slovakia','Spain', 'Sweden'), group = 'E' )
+group_f_teams = tibble(team = c('France','Germany','Hungary','Portugal'), group = 'F')
+groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, group_e_teams, group_f_teams) %>% 
+         mutate(i = seq_along(team))
+
+
+
+plot_data = full_join(groups, groups, by='group') %>% 
+  filter(i.x!=i.y) %>%
+  mutate(p_x_win = map2_dbl(team.x, team.y, prob_win)) %>% 
+  rename(Group = group)
+
+group_plot = plot_data %>% 
+  ggplot(aes(team.y, team.x, fill = p_x_win))+
+  geom_tile(size = 1, color = 'black')+
+  geom_text(aes(label = scales::percent(p_x_win, accuracy = 0.1)), color = if_else(plot_data$p_x_win<0.5, 'white','black' ), size = 6)+
+  facet_wrap(~Group, scales = 'free', labeller = label_both)+
+  scale_fill_continuous(type='viridis',labels = scales::percent)+
+  theme(aspect.ratio = 1,
+        panel.background = element_blank(),
+        strip.background = element_rect(fill = 'black'),
+        strip.text = element_text(color = 'white', size = 12),
+        plot.title = element_text(size = 22),
+        plot.subtitle = element_text(size = 12),
+        panel.spacing = unit(2, "lines")
+        )+
+  labs(y='', 
+       x = '',
+       title = 'Euro 2020',
+       fill = 'Win Probability',
+       subtitle = 'Probability Team on y Axis Beats Team on x Axis')+
+  guides(fill = F)
+
+ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
+  
+  
+```
+
+
+```{r}
+difs = score1 - score2
+yppc = fit$draws('yppc') %>% as_draws_matrix()
+
+bayesplot::ppc_dens_overlay(difs, yppc[1:100,])
+```
+
+
+
+
+
+```{r}
+yppc = fit$draws('yppc') %>% 
+  as_draws_df() %>% 
+  spread_draws(yppc[i]) %>% 
+  median_qi()
+
+euro_data %>% 
+  bind_cols(yppc) %>% 
+  mutate(match = str_c(str_to_title(team...1), str_to_title(team...3), sep = ' v. ')) %>% 
+  mutate(a_obs = score...2 - score...4) %>% 
+  slice(1:25) %>% 
+  ggplot()+
+  geom_pointrange(aes(match, yppc, ymin = .lower, ymax = .upper ))+
+  geom_point(aes(match, a_obs), color = 'red')+
+  coord_flip()
+```
+
+
+```{r}
+
+```
+
