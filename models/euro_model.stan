@@ -10,9 +10,13 @@ data {
 transformed data {
   vector[ngames] dif;
   vector[ngames] sqrt_dif;
+  real score_sgn;
   dif = score1 - score2;
-  for (i in 1:ngames)
-    sqrt_dif[i] = 2*(step(dif[i]) - .5)*sqrt(fabs(dif[i]));
+  for (i in 1:ngames){
+    score_sgn = (dif[i]<0) ? -1 : 1;
+    sqrt_dif[i] = score_sgn*sqrt(fabs(dif[i]));
+  }
+    
 }
 parameters {
   real<lower=0> sigma_a;
@@ -33,7 +37,7 @@ generated quantities{
   real sgn;
   for (i in 1:ngames){
     sgn = (a[team1[i]] < a[team2[i]]) ? -1 : 1;
-    yppc[i] = round(sgn*pow(student_t_rng(df, a[team1[i]]-a[team2[i]], sigma_y ),2));
+    yppc[i] = sgn*round(pow(student_t_rng(df, a[team1[i]]-a[team2[i]], sigma_y ),2));
   }
     
 }
