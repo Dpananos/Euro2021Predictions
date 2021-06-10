@@ -1,5 +1,5 @@
 ---
-title: "Euro @021 Model"
+title: "Euro 2021 Model"
 ---
 
 
@@ -10,11 +10,18 @@ library(cmdstanr)
 library(tidybayes)
 library(posterior)
 library(viridis)
+
+#Prior rankings using points here https://www.fifa.com/fifa-world-ranking/ranking-table/men/
+
 cmdstanr::register_knitr_engine(override = F)
 euro_data = read_xlsx('data/euro_results.xlsx')
+ranking_data = read_xlsx('data/rankings.xlsx')
+pts = ranking_data$pts
+scaled_pts = (pts - mean(pts))/(2*sd(pts))
 
 # Check data quality
 teams = sort(unique(c(euro_data$team...1, euro_data$team...3)))
+prior_score = scaled_pts[match(ranking_data$team, teams)]
 nteams = length(teams)
 ngames = nrow(euro_data)
 team1 = match(as.vector(euro_data[[1]]), teams)
@@ -23,8 +30,14 @@ score1 = as.vector(euro_data[[2]])
 score2 = as.vector(euro_data[[4]])
 df = 7
 
+
+
+```
+
+
+```{r}
 model_data = list(
-  nteams=nteams, ngames=ngames, team1=team1, team2=team2, score1=score1, score2=score2, df=df
+  nteams=nteams, ngames=ngames, team1=team1, team2=team2, score1=score1, score2=score2, df=df, prior_score=prior_score
 )
 ```
 
@@ -41,8 +54,8 @@ groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, g
 
 
 
-no_prior_model = cmdstan_model('models/euro_model.stan')
-fit = no_prior_model$sample(model_data, parallel_chains=4, seed=19920908)
+model = cmdstan_model('models/euro_model_prior_scores.stan')
+fit = model$sample(model_data, parallel_chains=4, seed=19920908)
 
 team_i = tibble(team = str_to_title(teams), i = seq_along(team))
 
