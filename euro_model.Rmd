@@ -1,5 +1,5 @@
 ---
-title: "Euro 2021 Model"
+title: "Euro 2⁄⁄021 Model"
 ---
 
 
@@ -17,11 +17,10 @@ cmdstanr::register_knitr_engine(override = F)
 euro_data = read_xlsx('data/euro_results.xlsx')
 ranking_data = read_xlsx('data/rankings.xlsx')
 pts = ranking_data$pts
-scaled_pts = (pts - mean(pts))/(2*sd(pts))
 
 # Check data quality
-teams = sort(unique(c(euro_data$team...1, euro_data$team...3)))
-prior_score = scaled_pts[match(ranking_data$team, teams)]
+teams = ranking_data$team
+prior_score = (pts - mean(pts))/(2*sd(pts))
 nteams = length(teams)
 ngames = nrow(euro_data)
 team1 = match(as.vector(euro_data[[1]]), teams)
@@ -29,6 +28,7 @@ team2 = match(as.vector(euro_data[[3]]), teams)
 score1 = as.vector(euro_data[[2]])
 score2 = as.vector(euro_data[[4]])
 df = 7
+
 
 
 
@@ -54,7 +54,7 @@ groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, g
 
 
 
-model = cmdstan_model('models/euro_model_prior_scores.stan')
+model = cmdstan_model('models/euro_model_prior_scores_estimated_df.stan')
 fit = model$sample(model_data, parallel_chains=4, seed=19920908)
 
 team_i = tibble(team = str_to_title(teams), i = seq_along(team))
@@ -75,8 +75,9 @@ quality %>%
   filter(team %in% groups$team) %>% 
   mutate(team = factor(team, levels = top_to_bottom, ordered = T)) %>% 
   ggplot(aes(a, team))+
-  stat_pointinterval()+
-  theme(aspect.ratio = 1.61)
+  stat_histinterval()+
+  theme(aspect.ratio = 1.61)+
+  labs(x = 'Latent Ability (Unitless)')->qual_plot
 
 ```
 
@@ -88,13 +89,13 @@ quality %>%
 
 a = fit$draws('a') %>% as_draws_df
 sigma_y = fit$draws('sigma_y')
-
+est_df = fit$draws('df')
 goal_diff = function(teamA, teamB){
   ixa = match(teamA, str_to_title(teams))
   ixb = match(teamB, str_to_title(teams))
   ai = a[, ixa]
   aj = a[, ixb]
-  random_outcome_on_sqrt = (ai - aj) + rt(nrow(ai-ai), df)*sigma_y
+  random_outcome_on_sqrt = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
   random_outcome = sign(ai-aj)*round(random_outcome_on_sqrt^2)
   pull(random_outcome)
   
@@ -103,6 +104,11 @@ goal_diff = function(teamA, teamB){
 prob_win = function(teamA, teamB){
   random_outcome = goal_diff(teamA, teamB)
   mean(random_outcome>0)
+}
+
+predict = function(teamA, teamB){
+  gd = goal_diff(teamA, teamB)
+  outcomes = case_when()
 }
 
 ```
@@ -175,9 +181,12 @@ euro_data %>%
   bind_cols(yppc) %>% 
   mutate(match = str_c(str_to_title(team...1), str_to_title(team...3), sep = ' v. ')) %>% 
   mutate(a_obs = score...2 - score...4) %>% 
-  slice(1:25) %>% 
-  ggplot()+
-  geom_pointrange(aes(match, yppc, ymin = .lower, ymax = .upper ))+
-  geom_point(aes(match, a_obs), color = 'red')+
-  coord_flip()
+  mutate(cov = (a_obs<.upper)&(.lower<a_obs)) %>% 
+  pull(cov) %>% 
+  mean
 ```
+
+
+
+
+
