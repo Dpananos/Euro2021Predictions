@@ -32,7 +32,7 @@ score2 = as.vector(euro_data[[4]])
 # Used for some models, not all
 df = 7
 b_mean = 0
-b_sd = 0.1
+b_sd = 0.05
 prior_score = ranking_data$prior_score
 
 # Store data in a list to pass to Stan
@@ -55,7 +55,7 @@ model_data = list(
 
 ```{r model-fit}
 # Instantiate model and run sampling.
-model = cmdstan_model('models/euro_model_prior_scores_estimated_df.stan')
+model = cmdstan_model('models/euro_raw_dif.stan')
 fit = model$sample(model_data, parallel_chains=4, seed=19920908)
 ```
 
@@ -96,15 +96,20 @@ a = fit$draws('a') %>% as_draws_df
 sigma_y = fit$draws('sigma_y')
 est_df = fit$draws('df')
 
-goal_diff = function(teamA, teamB){
+goal_diff = function(teamA, teamB, do_round=T){
   set.seed(0)
   ixa = match(teamA, str_to_title(teams))
   ixb = match(teamB, str_to_title(teams))
   ai = a[, ixa]
   aj = a[, ixb]
-  random_outcome_on_sqrt = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
-  random_outcome = sign(ai-aj)*round(random_outcome_on_sqrt^2)
-  pull(random_outcome)
+  random_outcome = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
+  if(do_round){
+    round(pull(random_outcome))
+  }
+  else{
+    pull(random_outcome)
+  }
+  
   
 }
 
@@ -193,6 +198,24 @@ plot_data %>%
 ```
 
 ```{r}
+coverage = function(){
+  
+  fit$draws('yppc') %>% 
+  as_draws_df() %>% 
+  spread_draws(yppc[i]) %>% 
+  median_hdci() %>% 
+  bind_cols(euro_data) %>% 
+  mutate(dif = score...9 - score...11,
+         cover = (.lower<dif)&(dif<.upper)) %>% 
+  summarise(mean(cover))
+  
+}
+ coverage()
+
+```
+
+
+```{r}
 
 teamA = 'Belgium'
 teamB = 'England'
@@ -216,7 +239,7 @@ goal_diff(teamA, teamB) %>%
   geom_text(aes(bins, n, label = labels), nudge_y = 0.02)+
   theme_light()+
   scale_y_continuous(labels = scales::percent)+
-  scale_fill_brewer(palette = 'Set1', direction = -1)+
+  scale_fill_brewer(palette = 'Set2', direction = -1)+
   theme(legend.position = 'bottom')+
   labs(x = 'Score Differential',
        y = 'Posterior Probability',
@@ -227,6 +250,34 @@ goal_diff(teamA, teamB) %>%
 }
 
 score_plot('Italy','Turkey')
+ggsave('italy_v_turkey.png', dpi = 400, height = 5, width = 8)
 
 ```
+
+```{r}
+  fit$draws('yppc') %>% 
+  as_draws_df() %>% 
+  spread_draws(yppc[i]) %>% 
+  median_hdci() %>% 
+  bind_cols(euro_data) %>% 
+  mutate(dif = score...9 - score...11,
+         match = str_c(team...8, ' v. ', team...10)) %>% 
+  sample_n(30) %>%  
+  ggplot()+
+  geom_pointrange(aes(match, yppc, ymin = .lower, ymax = .upper))+
+  geom_point(aes( match, dif), color = 'red')+
+  coord_flip()
+  
+  
+  
+```
+
+
+```{r}
+yppc = fit$draws('yppc') %>% as_draws_matrix
+y = score1 - score2
+
+bayesplot::ppc_bars(y, yppc)
+```
+
 

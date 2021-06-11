@@ -21,7 +21,7 @@ transformed data {
     
 }
 parameters {
-  real<lower=0> b;
+  real b;
   real<lower=0> sigma_a;
   real<lower=0> sigma_y;
   vector[nteams] eta_a;
@@ -33,9 +33,10 @@ transformed parameters {
 }  
 model {
   b ~ normal(b_mean, b_sd);
-  // df ~ gamma(2,0.1);
-  df ~ gamma(5,0.5);
+  df ~ gamma(2,0.1);
   eta_a ~ normal(0,1);
+  sigma_y ~ cauchy(0, 1);
+  sigma_a ~ normal(0,1);
   for (i in 1:ngames)
     sqrt_dif[i] ~ student_t(df, a[team1[i]]-a[team2[i]], sigma_y);
 }
