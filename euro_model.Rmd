@@ -277,7 +277,7 @@ ggsave('italy_v_turkey.png', dpi = 400, height = 5, width = 8)
 yppc = fit$draws('yppc') %>% as_draws_matrix
 y = score1 - score2
 
-bayesplot::ppc_bars(y, yppc)
+bayesplot::ppc_ecdf_overlay(y, yppc)
 ```
 
 

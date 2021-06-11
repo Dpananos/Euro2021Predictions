@@ -38,7 +38,7 @@ generated quantities{
   real yppc[ngames];
   for (i in 1:ngames){
     
-    yppc[i] = round(pow(student_t_rng(df, a[team1[i]]-a[team2[i]], sigma_y ),1));
+    yppc[i] = round(student_t_rng(df, a[team1[i]]-a[team2[i]], sigma_y ));
   }
     
 }
