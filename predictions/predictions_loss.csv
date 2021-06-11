@@ -1,4 +1,4 @@
-Group,teamA,teamB,A Wins,B Wins,Draw,A Won,B won,Draw,LossA,LossB,LossDraw,CrossEntropy
+Group,teamA,teamB,A Wins,B Wins,Draw,Awon,Bwon,DrawHappened,LossA,LossB,LossDraw,CrossEntropy
 A,France,Switzerland,0.20025,0.33875,0.461,0,0,1,0,0,-0.774357236,-0.774357236
 A,France,Albania,0.3195,0.21625,0.46425,1,0,0,-1.140998005,0,0,-1.140998005
 A,France,Romania,0.17175,0.36425,0.464,1,0,0,-1.761715348,0,0,-1.761715348

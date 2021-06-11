@@ -1,0 +1,341 @@
+
+Kazakhstan 0-1 Turkey
+Iceland 2-1 Czech Republic
+Latvia 0-2 Netherlands
+Andorra 1-3 Cyprus
+Bosnia-Herzegovina 3-1 Israel
+Wales 1-0 Belgium
+Croatia 1-1 Italy
+Malta 0-1 Bulgaria
+Norway 0-0 Azerbaijan
+Poland 4-0 Georgia
+
+Republic of Ireland 1-1 Scotland
+
+Finland 0-1 Hungary
+
+Armenia 2-3 Portugal
+
+Gibraltar 0-7 Germany
+
+Faroe Islands 2-1 Greece
+
+Northern Ireland 0-0 Romania
+
+Denmark 2-0 Serbia
+Ukraine 3-0 Luxembourg
+
+Estonia 2-0 San Marino
+
+Slovenia 2-3 England
+
+Liechtenstein 1-1 Moldova
+
+Russia 0-1 Austria
+
+Belarus 0-1 Spain
+
+Slovakia 2-1 FYR Macedonia
+
+Lithuania 1-2 Switzerland
+
+Sweden 3-1 Montenegro
+Czech Republic 2-1 Netherlands
+
+Iceland 3-0 Turkey
+
+Kazakhtan 0-0 Latvia
+
+Latvia 0-3 Iceland
+
+Netherlands 3-1 Kazakhstan
+
+Turkey 1-2 Czech Republic
+
+Kazakhstan 2-4 Czech Republic
+
+Iceland 2-0 Netherlands
+
+Latvia 1-1 Turkey
+
+Netherlands 6-0 Latvia
+
+Czech Republic 2-1 Iceland
+
+Turkey 3-1 Kazakhstan
+
+Czech Republic 1-1 Latvia
+
+Netherlands 1-1 Turkey
+
+Kazakhstan 0-3 Iceland
+
+Kazakhstan 0-1 Turkey
+
+Iceland 2-1 Czech Republic
+
+Latvia 2-0 Netherlands
+Bosnia-Herzegovina 1-2 Cyprus
+
+Andorra 1-2 Wales
+
+Belgium 6-0 Andorra
+
+Cyprus 1-2 Israel
+
+Wales 0-0 Bosnia-Herzegovina
+
+Andorra 1-4 Israel
+
+Bosnia-Herzegovina 1-1 Belgium
+
+Wales 2-1 Cyprus
+
+Belgium 0-0 Wales
+
+Cyprus 5-0 Andorra
+
+Israel 3-0 Bosnia-Herzegovina
+
+Israel 0-3 Wales
+
+Andorra 0-3 Bosnia-Herzegovina
+
+Belgium 5-0 Cyprus
+
+Andorra 1-3 Cyprus
+
+Bosnia-Herzegovina 3-1 Israel
+
+Wales 1-0 Belgium
+Ukraine 0-1 Slovakia
+
+Spain 5-1 FYR Macedonia
+
+Luxembourg 1-1 Belarus
+
+Belarus 0-2 Ukraine
+
+Macedonia 3-2 Luxembourg
+
+Slovakia 2-1 Spain
+
+Ukraine 1-0 Macedonia
+
+Belarus 1-3 Slovakia
+
+Luxembourg 0-4 Spain
+
+Luxembourg 0-3 Ukraine
+
+Macedonia 0-2 Slovakia
+
+Spain 3-0 Belarus
+
+Macedonia 1-2 Belarus
+
+Spain 1-0 Ukraine
+
+Ukraine 3-0 Luxembourg
+
+Belarus 0-1 Spain
+
+Slovakia 2-1 Macedonia
+Germany 2-1 Scotland
+
+Gibraltar 0-7 Poland
+
+Georgia 1-2 Republic of Ireland
+
+Republic of Ireland 7-0 Gibraltar
+
+Scotland 1-0 Georgia
+
+Poland 2-0 Germany
+
+Germany 1-1 Republic of Ireland
+
+Gibraltar 0-3 Georgia
+
+Poland 2-2 Scotland
+
+Georgia 0-4 Poland
+
+Scotland 1-0 Republic of Ireland
+
+Germany 4-0 Gibraltar
+
+Georgia 0-2 Germany
+
+Scotland 6-1 Gibraltar
+
+Republic of Ireland 1-1 Poland
+
+Republic of Ireland 1-1 Scotland
+
+Poland 4-0 Georgia
+
+Gibraltar 0-7 Germany
+Switzerland 0-2 England
+
+Estonia 1-0 Slovenia
+
+San Marino 0-2 Lithuania
+
+England 5-0 San Marino
+
+Lithuania 1-0 Estonia
+
+Slovenia 1-0 Switzerland
+
+Estonia 0-1 England
+
+Lithuania 0-2 Slovenia
+
+San Marino 0-4 Switzerland
+
+England 3-1 Slovenia
+
+San Marino 0-0 Estonia
+
+Switzerland 4-0 Lithuania
+
+England 4-0 Lithuania
+
+Switzerland 3-0 Estonia
+
+Slovenia 6-0 San Marino
+
+Estonia 2-0 San Marino
+
+Slovenia 2-3 England
+
+Lithuania 1-2 Switzerland
+Faroe Islands 1-3 Finland
+
+Hungary 1-2 Northern Ireland
+
+Greece 0-1 Romania
+
+Romania 1-1 Hungary
+
+Finland 1-1 Greece
+
+Northern Ireland 2-0 Faroe Islands
+
+Faroe Islands 0-1 Hungary
+
+Finland 0-2 Romania
+
+Greece 0-2 Northern Ireland
+
+Greece 0-1 Faroe Islands
+
+Hungary 1-0 Finland
+
+Romania 2-0 Northern Ireland
+
+Northern Ireland 2-1 Finland
+
+Romania 1-0 Faroe Islands
+
+Hungary 0-0 Greece
+
+Finland 0-1 Hungary
+
+Faroe Islands 2-1 Greece
+
+Northern Ireland 0-0 Romania
+Montenegro 2-0 Moldova
+
+Russia 4-0 Liechtenstein
+
+Austria 1-1 Sweden
+
+Liechtenstein 0-0 Montenegro
+
+Moldova 1-2 Austria
+
+Sweden 1-1 Russia
+
+Austria 1-0 Montenegro
+
+Russia 1-1 Moldova
+
+Sweden 2-0 Liechtenstein
+
+Austria 1-0 Russia
+
+Moldova 0-1 Liechtenstein
+
+Montenegro 1-1 Sweden
+
+Moldova 0-2 Sweden
+
+Liechtenstein 0-5 Austria
+
+Montenegro 0-3 Russia, awarded due to crowd trouble
+
+Liechtenstein 1-1 Moldova
+
+Russia 0-1 Austria
+
+Sweden 3-1 Montenegro
+Azerbaijan 1-2 Bulgaria
+
+Croatia 2-0 Malta
+
+Norway 0-2 Italy
+
+Bulgaria 0-1 Croatia
+
+Italy 2-1 Azerbaijan
+
+Malta 0-3 Norway
+
+Croatia 6-0 Azerbaijan
+
+Malta 0-1 Italy
+
+Norway 2-1 Bulgaria
+
+Azerbaijan 0-1 Norway
+
+Bulgaria 1-1 Malta
+
+Italy 1-1 Croatia
+
+Azerbaijan 2-0 Malta
+
+Croatia 5-1 Norway
+
+Bulgaria 2-2 Italy
+
+Croatia 1-1 Italy
+
+Malta 0-1 Bulgaria
+
+Norway 0-0 Azerbaijan
+Portugal 0-1 Albania
+
+Denmark 2-1 Armenia
+
+Albania 1-1 Denmark
+
+Armenia 1-1 Serbia
+
+Denmark 0-1 Portugal
+
+Serbia 3-0 Albania - Albania forfeits, but Serbia deducted 3 points for crowd trouble
+
+Portugal 1-0 Armenia
+
+Serbia 1-3 Denmark
+
+Albania 2-1 Armenia
+
+Portugal 2-1 Serbia
+
+Armenia 2-3 Portugal
+
+Denmark 2-0 Serbia

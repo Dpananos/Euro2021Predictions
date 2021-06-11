@@ -16,9 +16,9 @@ cmdstanr::register_knitr_engine(override = F)
 
 
 #Load in data
-euro_data = read_xlsx('data/euro_results.xlsx')
-ranking_data = read_xlsx('data/rankings.xlsx') %>% 
-               mutate(prior_score = (pts - mean(pts))/sd(pts)) %>% 
+euro_data = read_csv('data/2016_cleaned.csv')
+ranking_data = read_csv('data/2016_rankings.csv') %>% 
+               mutate(prior_score = (ranking - mean(ranking))/sd(ranking)) %>% 
                arrange(team)
 
 # extract data for model
@@ -26,9 +26,9 @@ teams = ranking_data$team
 nteams = length(teams)
 ngames = nrow(euro_data)
 team1 = match(as.vector(euro_data[[1]]), teams)
-team2 = match(as.vector(euro_data[[3]]), teams)
+team2 = match(as.vector(euro_data[[4]]), teams)
 score1 = as.vector(euro_data[[2]])
-score2 = as.vector(euro_data[[4]])
+score2 = as.vector(euro_data[[3]])
 # Used for some models, not all
 df = 7
 b_mean = 0
@@ -48,6 +48,8 @@ model_data = list(
   b_mean = b_mean,
   b_sd = b_sd
 )
+
+ranking_data %>% View
 
 ```
 
@@ -98,8 +100,8 @@ est_df = fit$draws('df')
 
 goal_diff = function(teamA, teamB){
   set.seed(0)
-  ixa = match(teamA, str_to_title(teams))
-  ixb = match(teamB, str_to_title(teams))
+  ixa = match(teamA, teams)
+  ixb = match(teamB, teams)
   ai = a[, ixa]
   aj = a[, ixb]
   random_outcome_on_sqrt = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
@@ -136,12 +138,12 @@ predict = function(teamA, teamB){
 
 ```{r}
 # Construct groups for predicting results of the group stage
-group_a_teams = tibble(team = c('Italy','Switzerland','Turkey','Wales'), group = 'A')
-group_b_teams = tibble(team = c('Belgium','Denmark','Finland','Russia'), group = 'B' )
-group_c_teams = tibble(team = c('Austria','Netherlands','North Macedonia', 'Ukraine'), group = 'C')
-group_d_teams = tibble(team = c('Croatia', 'Czech', 'England', 'Scotland'), group = 'D' )
-group_e_teams = tibble(team = c('Poland', 'Slovakia','Spain', 'Sweden'), group = 'E' )
-group_f_teams = tibble(team = c('France','Germany','Hungary','Portugal'), group = 'F')
+group_a_teams = tibble(team = c('France','Switzerland','Albania','Romania'), group = 'A')
+group_b_teams = tibble(team = c('Wales','England','Slovakia','Russia'), group = 'B' )
+group_c_teams = tibble(team = c('Germany','Poland','NorthernIreland', 'Ukraine'), group = 'C')
+group_d_teams = tibble(team = c('Croatia', 'Spain', 'Turkey', 'Czech'), group = 'D' )
+group_e_teams = tibble(team = c('Italy', 'Belgium','Ireland', 'Sweden'), group = 'E' )
+group_f_teams = tibble(team = c('Hungary','Iceland','Austria','Portugal'), group = 'F')
 
 # Combine individual group dataframes into a single dataframe.
 groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, group_e_teams, group_f_teams) %>% 
@@ -149,7 +151,7 @@ groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, g
 
 
 plot_data = full_join(groups, groups, by='group') %>% 
-  filter(i.x!=i.y) %>%
+filter(i.x!=i.y) %>%
   mutate(p_x_win = map2_dbl(team.x, team.y, prob_win)) %>% 
   rename(Group = group)
 
@@ -228,5 +230,12 @@ goal_diff(teamA, teamB) %>%
 
 score_plot('Italy','Turkey')
 
+```
+
+
+```{r}
+read_csv('predictions/predictions_loss.csv') %>% 
+  select(`Draw`, DrawHappened) %>% 
+  pull(Draw) %>% hist
 ```
 
