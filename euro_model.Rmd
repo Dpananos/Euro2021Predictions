@@ -32,7 +32,7 @@ score2 = as.vector(euro_data[[3]])
 # Used for some models, not all
 df = 7
 b_mean = 0
-b_sd = 0.1
+b_sd = 0.05
 prior_score = ranking_data$prior_score
 
 # Store data in a list to pass to Stan
@@ -49,7 +49,6 @@ model_data = list(
   b_sd = b_sd
 )
 
-ranking_data %>% View
 
 ```
 
@@ -57,7 +56,7 @@ ranking_data %>% View
 
 ```{r model-fit}
 # Instantiate model and run sampling.
-model = cmdstan_model('models/euro_model_prior_scores_estimated_df.stan')
+model = cmdstan_model('models/euro_raw_diff.stan')
 fit = model$sample(model_data, parallel_chains=4, seed=19920908)
 ```
 
@@ -98,15 +97,20 @@ a = fit$draws('a') %>% as_draws_df
 sigma_y = fit$draws('sigma_y')
 est_df = fit$draws('df')
 
-goal_diff = function(teamA, teamB){
+goal_diff = function(teamA, teamB, do_round=T){
   set.seed(0)
   ixa = match(teamA, teams)
   ixb = match(teamB, teams)
   ai = a[, ixa]
   aj = a[, ixb]
-  random_outcome_on_sqrt = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
-  random_outcome = sign(ai-aj)*round(random_outcome_on_sqrt^2)
-  pull(random_outcome)
+  random_outcome = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
+  if(do_round){
+    round(pull(random_outcome))
+  }
+  else{
+    pull(random_outcome)
+  }
+  
   
 }
 
@@ -190,8 +194,52 @@ plot_data %>%
   rename(teamA = team.x, teamB = team.y) %>% 
   mutate(prediction = map2(teamA, teamB, predict)) %>% 
   unnest(prediction) %>% 
-  write_csv('predictions/predictions.csv')
-  
+  select(-3, -2, -1) -> predictions
+
+results = tribble(~'AWon',~'BWon', ~'DrawHappened',
+          0,	0,	1,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          0,	0,	1,
+          1,	0,	0,
+          0,	1,	0,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          0,	0,	1,
+          1,	0,	0,
+          0,	0,	1,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          0,	0,	1,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          0,	1,	0,
+          1,	0,	0,
+          1,	0,	0,
+          1,	0,	0,
+          0,	0,	1,
+          0,	0,	1,
+          1,	0,	0,
+          0,	0,	1,
+          1,	0,	0,
+          0,	0,	1,
+          0,	0,	1)
+
+y = as.matrix(results)
+yhat = as.matrix(predictions)
+
+sum(log(yhat)*y)
+
+log(0.33)*nrow(yhat)
 ```
 
 ```{r}
