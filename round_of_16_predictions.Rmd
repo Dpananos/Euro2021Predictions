@@ -1,0 +1,122 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r data-prep}
+library(tidyverse)
+library(readxl)
+library(cmdstanr)
+library(tidybayes)
+library(posterior)
+library(viridis)
+cmdstanr::register_knitr_engine(override = F)
+
+#Prior rankings using points here https://www.fifa.com/fifa-world-ranking/ranking-table/men/
+
+#Group stage
+#Load in data
+euro_data = read_csv('data/2016_cleaned.csv') %>% 
+            bind_rows(read_csv('data/group_stage_results.csv'))
+ranking_data = read_csv('data/2016_rankings.csv') %>% 
+               mutate(prior_score = (ranking - mean(ranking))/sd(ranking)) %>% 
+               arrange(team)
+
+# extract data for model
+teams = ranking_data$team
+nteams = length(teams)
+ngames = nrow(euro_data)
+team1 = match(as.vector(euro_data[[1]]), teams)
+team2 = match(as.vector(euro_data[[4]]), teams)
+score1 = as.vector(euro_data[[2]])
+score2 = as.vector(euro_data[[3]])
+# Used for some models, not all
+df = 7
+b_mean = 0
+b_sd = 0.05
+prior_score = ranking_data$prior_score
+
+# Store data in a list to pass to Stan
+model_data = list(
+  nteams = nteams,
+  ngames = ngames,
+  team1 = team1,
+  team2 = team2,
+  score1 = score1,
+  score2 = score2,
+  df = df,
+  prior_score = prior_score,
+  b_mean = b_mean,
+  b_sd = b_sd
+)
+
+
+# Instantiate model and run sampling.
+model = cmdstan_model('models/euro_raw_diff.stan')
+fit = model$sample(model_data, parallel_chains=4, seed=19920908)
+
+```
+
+
+```{r}
+
+a = fit$draws('a') %>% as_draws_df
+sigma_y = fit$draws('sigma_y')
+est_df = fit$draws('df')
+
+goal_diff = function(teamA, teamB, do_round=T){
+  set.seed(0)
+  ixa = match(teamA, teams)
+  ixb = match(teamB, teams)
+  ai = a[, ixa]
+  aj = a[, ixb]
+  random_outcome = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
+  if(do_round){
+    round(pull(random_outcome))
+  }
+  else{
+    pull(random_outcome)
+  }
+  
+  
+}
+
+prob_win = function(teamA, teamB){
+  random_outcome = goal_diff(teamA, teamB)
+  mean(random_outcome>0)
+}
+
+predict = function(teamA, teamB){
+  gd = goal_diff(teamA, teamB)
+  gd = gd[gd!=0]
+  outcome_space = tibble(outcome = c('A Wins', 'B Wins'),
+                         result = c(1, -1))
+  
+  gdr = case_when(gd<0~-1, gd>0~1, T~0)
+  
+  tibble(result = gdr) %>% 
+    right_join(outcome_space) %>% 
+    group_by(outcome) %>% 
+    summarise(n = n()) %>% 
+    mutate(n = n/sum(n)) %>% 
+    spread(outcome, n)
+  
+
+}
+  
+```
+
+
+
+```{r}
+ro16_games = read_csv('predictions/round_of_16_predictions.csv')
+
+ro16_games %>% 
+  mutate(
+    preds = map2(team1, team2, predict)
+  ) %>% 
+  unnest(preds) %>% 
+  write_csv('predictions/round_of_16_predictions_results.csv')
+```
+
