@@ -31,8 +31,7 @@ model {
   // df ~ gamma(2,0.1);
   df ~ gamma(5,0.5);
   eta_a ~ normal(0,1);
-  for (i in 1:ngames)
-    dif[i] ~ student_t(df, a[team1[i]]-a[team2[i]], sigma_y);
+  dif ~ student_t(df, a[team1]-a[team2], sigma_y);
 }
 generated quantities{
   real yppc[ngames];
