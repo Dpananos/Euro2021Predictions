@@ -10,17 +10,22 @@ library(cmdstanr)
 library(tidybayes)
 library(posterior)
 library(viridis)
+library(pROC)
 cmdstanr::register_knitr_engine(override = F)
 
 #Prior rankings using points here https://www.fifa.com/fifa-world-ranking/ranking-table/men/
 
 
 #Load in data
-euro_data = read_csv('data/qualifying_round_games.csv')
+
+match_day_1 = read_xlsx('predictions/predictions.xlsx') %>% 
+              drop_na()
+
+
+euro_data = read_csv('data/qualifying_round_games.csv') 
 ranking_data = read_csv('data/rankings.csv') %>% 
                mutate(prior_score = (pts - mean(pts))/sd(pts)) %>% 
                arrange(team)
-
 # extract data for model
 teams = ranking_data$team
 nteams = length(teams)
@@ -202,4 +207,17 @@ tibble(
 
 ```
 
+
+
+```{r}
+df = read_xlsx('predictions/predictions.xlsx')
+
+yhat = select(df, `A Wins`:Draw) %>% as.matrix()
+y = df %>% 
+    mutate(y = case_when((score1>score2)~'A Wins', (score1==score2)~'Draw', T~'B Wins')) %>% 
+    pull(y) %>% 
+    factor(., levels = c('A Wins', 'B Wins', 'Draw'), ordered = F)
+
+pROC::multiclass.roc(y, yhat)
+```
 
