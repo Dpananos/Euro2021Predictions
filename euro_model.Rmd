@@ -249,8 +249,8 @@ goal_diff(teamA, teamB) %>%
 
 }
 
-score_plot('Italy','Turkey')
-ggsave('italy_v_turkey.png', dpi = 400, height = 5, width = 8)
+score_plot('England','Croatia')
+
 
 ```
 
@@ -280,4 +280,28 @@ y = score1 - score2
 bayesplot::ppc_ecdf_overlay(y, yppc)
 ```
 
+
+```{r}
+ fit$draws('yppc') %>% 
+  as_draws_df() %>% 
+  spread_draws(yppc[i]) %>% 
+  summarise(predicted_win_prob = mean(yppc>0)) %>% 
+  bind_cols(euro_data) %>% 
+  mutate(dif = as.integer((score...4 - score...6)>0),
+         match = str_c(team...3, ' v. ', team...5))  -> mod_pred
+
+
+
+
+Metrics::auc(mod_pred$dif, mod_pred$predicted_win_prob)
+
+pROC::roc(mod_pred$dif, mod_pred$predicted_win_prob) %>% 
+  pROC::ggroc()
+  
+  mod_pred %>% 
+  ggplot(aes(predicted_win_prob, dif))+
+  geom_rug()+
+  geom_abline()+
+  geom_smooth()
+```
 
