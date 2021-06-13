@@ -1,37 +1,13 @@
-Group,teamA,teamB,A Wins,B Wins,Draw
-A,Italy,Switzerland,0.636,0.1835,0.1805
-A,Italy,Turkey,0.66575,0.165,0.16925
-A,Italy,Wales,0.742,0.122,0.136
-A,Switzerland,Turkey,0.41375,0.35875,0.2275
-A,Switzerland,Wales,0.50775,0.277,0.21525
-A,Turkey,Wales,0.484,0.306,0.21
-B,Belgium,Denmark,0.696,0.1545,0.1495
-B,Belgium,Finland,0.85875,0.0585,0.08275
-B,Belgium,Russia,0.64525,0.17025,0.1845
-B,Denmark,Finland,0.633,0.19525,0.17175
-B,Denmark,Russia,0.33375,0.45925,0.207
-B,Finland,Russia,0.16075,0.69375,0.1455
-C,Austria,Netherlands,0.282,0.50525,0.21275
-C,Austria,North Macedonia,0.59175,0.20425,0.204
-C,Austria,Ukraine,0.363,0.415,0.222
-C,Netherlands,North Macedonia,0.6985,0.14875,0.15275
-C,Netherlands,Ukraine,0.48525,0.30975,0.205
-C,North Macedonia,Ukraine,0.20875,0.6015,0.18975
-D,Croatia,Czech,0.6505,0.17625,0.17325
-D,Croatia,England,0.1425,0.71125,0.14625
-D,Croatia,Scotland,0.65425,0.165,0.18075
-D,Czech,England,0.0395,0.89675,0.06375
-D,Czech,Scotland,0.4,0.38575,0.21425
-D,England,Scotland,0.896,0.0375,0.0665
-E,Poland,Slovakia,0.53075,0.2645,0.20475
-E,Poland,Spain,0.3695,0.4185,0.212
-E,Poland,Sweden,0.458,0.32525,0.21675
-E,Slovakia,Spain,0.25,0.54625,0.20375
-E,Slovakia,Sweden,0.3235,0.4575,0.219
-E,Spain,Sweden,0.48225,0.27675,0.241
-F,France,Germany,0.286,0.5005,0.2135
-F,France,Hungary,0.66775,0.16225,0.17
-F,France,Portugal,0.37625,0.413,0.21075
-F,Germany,Hungary,0.75725,0.1045,0.13825
-F,Germany,Portugal,0.488,0.30625,0.20575
-F,Hungary,Portugal,0.15925,0.6735,0.16725
+team1,team2,matchday,A Wins,B Wins,Draw
+Turkey,Italy,1,0.17925,0.647,0.17375
+Wales,Switzerland,1,0.29775,0.495,0.20725
+Denmark,Finland,1,0.633,0.19525,0.17175
+Belgium,Russia,1,0.64525,0.17025,0.1845
+England,Croatia,1,0.718,0.1355,0.1465
+Austria,North Macedonia,1,0.59175,0.20425,0.204
+Netherlands,Ukraine,1,0.48525,0.30975,0.205
+Scotland,Czech,1,0.3895,0.386,0.2245
+Poland,Slovakia,1,0.53075,0.2645,0.20475
+Spain,Sweden,1,0.48225,0.27675,0.241
+Hungary,Portugal,1,0.15925,0.6735,0.16725
+France,Germany,1,0.286,0.5005,0.2135

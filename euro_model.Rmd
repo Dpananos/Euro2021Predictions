@@ -16,8 +16,8 @@ cmdstanr::register_knitr_engine(override = F)
 
 
 #Load in data
-euro_data = read_xlsx('data/euro_results.xlsx')
-ranking_data = read_xlsx('data/rankings.xlsx') %>% 
+euro_data = read_csv('data/qualifying_round_games.csv')
+ranking_data = read_csv('data/rankings.csv') %>% 
                mutate(prior_score = (pts - mean(pts))/sd(pts)) %>% 
                arrange(team)
 
@@ -25,10 +25,10 @@ ranking_data = read_xlsx('data/rankings.xlsx') %>%
 teams = ranking_data$team
 nteams = length(teams)
 ngames = nrow(euro_data)
-team1 = match(as.vector(euro_data[[1]]), teams)
-team2 = match(as.vector(euro_data[[3]]), teams)
-score1 = as.vector(euro_data[[2]])
-score2 = as.vector(euro_data[[4]])
+team1 = match(euro_data$team1, teams)
+team2 = match(euro_data$team2, teams)
+score1 = euro_data$score1
+score2 = euro_data$score2
 # Used for some models, not all
 df = 7
 b_mean = 0
@@ -58,36 +58,6 @@ model_data = list(
 model = cmdstan_model('models/euro_raw_dif.stan')
 fit = model$sample(model_data, parallel_chains=4, seed=19920908)
 ```
-
-
-```{r examine-new-ranks}
-# Take a look at latent ability ranking.
-ability = fit$draws('a') %>% 
-          as_draws_df %>% 
-          spread_draws(a[i]) 
-# Need something to join ability samples to
-team_i = tibble(team = str_to_title(teams), i = seq_along(team))
-
-# Used in ordering outcomes
-top_to_bottom = ability %>% 
-  mean_qi() %>% 
-  left_join(team_i) %>% 
-  arrange(a) %>% 
-  pull(team)
-
-# Forest-like plot of ability.  Belgium seems like the team to beat.
-ability %>% 
-  left_join(team_i) %>% 
-  mutate(team = factor(team, levels = top_to_bottom, ordered = T)) %>% 
-  ggplot(aes(a, team))+
-  stat_interval()+
-  theme(aspect.ratio = 1.61)+
-  labs(x = 'Latent Ability (Unitless)')
-
-```
-
-
-
 
 
 ```{r predict-funcs}
@@ -186,122 +156,50 @@ ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
 
 
 
-```{r}
-plot_data %>% 
-  filter(i.x<i.y) %>% 
-  select(Group, team.x, team.y) %>% 
-  rename(teamA = team.x, teamB = team.y) %>% 
-  mutate(prediction = map2(teamA, teamB, predict)) %>% 
-  unnest(prediction) %>% 
+```{r match-day-1}
+# Match day 1
+group_stage_team_1 = c(
+  'Turkey',
+  'Wales',
+  'Denmark',
+  'Belgium',
+  'England',
+  'Austria',
+  'Netherlands',
+  'Scotland',
+  'Poland',
+  'Spain',
+  'Hungary',
+  'France'
+)
+
+group_stage_team_2 = c(
+  'Italy',
+  'Switzerland',
+  'Finland',
+  'Russia',
+  'Croatia',
+  'North Macedonia',
+  'Ukraine',
+  'Czech',
+  'Slovakia',
+  'Sweden',
+  'Portugal',
+  'Germany'
+)
+  
+
+tibble(
+  team1 = group_stage_team_1, 
+  team2 = group_stage_team_2,
+  matchday = 1
+) %>% 
+  mutate(predictions = map2(team1, team2, predict)) %>% 
+  unnest(predictions) %>% tail
   write_csv('predictions/predictions.csv')
-  
-```
 
-```{r}
-coverage = function(){
   
-  fit$draws('yppc') %>% 
-  as_draws_df() %>% 
-  spread_draws(yppc[i]) %>% 
-  median_hdci() %>% 
-  bind_cols(euro_data) %>% 
-  mutate(dif = score...9 - score...11,
-         cover = (.lower<dif)&(dif<.upper)) %>% 
-  summarise(mean(cover))
-  
-}
- coverage()
 
 ```
 
-
-```{r}
-
-teamA = 'Belgium'
-teamB = 'England'
-
-score_plot = function(teamA, teamB){
-  bar_order = c('-4 or less', '-3', '-2', '-1', '0', '1', '2', '3', '4 or more')
-result = c(rep(str_c(teamB, ' Wins'), 4), 'Draw', rep(str_c(teamA, ' Wins'),4))
-result_order = c(str_c(teamB, ' Wins'), 'Draw', str_c(teamA, ' Wins'))
-bins = tibble(bins = factor(bar_order, levels = bar_order, ordered = T), result = factor(result, ordered = T, levels = result_order))
-
-goal_diff(teamA, teamB) %>% 
-  tibble(gd = .) %>% 
-  mutate(differential = case_when(gd<=-4~'-4 or less', gd>=4~'4 or more', T~as.character(gd)),
-         bins = factor(differential, levels = bar_order, ordered = T)) %>% 
-  right_join(bins) %>% 
-  count(bins, result) %>% 
-  mutate(n = n/sum(n),
-         labels = if_else(n<0.001, '<0.1%', scales::percent(n, accuracy = 0.1))) %>% 
-  ggplot()+
-  geom_col(aes(bins, n, fill = result))+
-  geom_text(aes(bins, n, label = labels), nudge_y = 0.02)+
-  theme_light()+
-  scale_y_continuous(labels = scales::percent)+
-  scale_fill_brewer(palette = 'Set2', direction = -1)+
-  theme(legend.position = 'bottom')+
-  labs(x = 'Score Differential',
-       y = 'Posterior Probability',
-       fill = '',
-       title = str_c('Estimated Score Differential between ', teamA, ' and ', teamB),
-       subtitle = str_c('Positive differential means ', teamA, ' scores more'))
-
-}
-
-score_plot('England','Croatia')
-
-
-```
-
-```{r}
-  fit$draws('yppc') %>% 
-  as_draws_df() %>% 
-  spread_draws(yppc[i]) %>% 
-  median_hdci() %>% 
-  bind_cols(euro_data) %>% 
-  mutate(dif = score...9 - score...11,
-         match = str_c(team...8, ' v. ', team...10)) %>% 
-  sample_n(30) %>%  
-  ggplot()+
-  geom_pointrange(aes(match, yppc, ymin = .lower, ymax = .upper))+
-  geom_point(aes( match, dif), color = 'red')+
-  coord_flip()
-  
-  
-  
-```
-
-
-```{r}
-yppc = fit$draws('yppc') %>% as_draws_matrix
-y = score1 - score2
-
-bayesplot::ppc_ecdf_overlay(y, yppc)
-```
-
-
-```{r}
- fit$draws('yppc') %>% 
-  as_draws_df() %>% 
-  spread_draws(yppc[i]) %>% 
-  summarise(predicted_win_prob = mean(yppc>0)) %>% 
-  bind_cols(euro_data) %>% 
-  mutate(dif = as.integer((score...4 - score...6)>0),
-         match = str_c(team...3, ' v. ', team...5))  -> mod_pred
-
-
-
-
-Metrics::auc(mod_pred$dif, mod_pred$predicted_win_prob)
-
-pROC::roc(mod_pred$dif, mod_pred$predicted_win_prob) %>% 
-  pROC::ggroc()
-  
-  mod_pred %>% 
-  ggplot(aes(predicted_win_prob, dif))+
-  geom_rug()+
-  geom_abline()+
-  geom_smooth()
-```
 
