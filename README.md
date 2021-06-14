@@ -94,99 +94,99 @@ fit = model$sample(model_data, parallel_chains=4, seed=19920908, show_messages =
 ## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
-## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
-## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
-## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
 ## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
-## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-## Chain 2 finished in 2.2 seconds.
-## Chain 3 finished in 2.2 seconds.
+## Chain 2 finished in 2.0 seconds.
+## Chain 3 finished in 2.0 seconds.
 ## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-## Chain 1 finished in 2.3 seconds.
-## Chain 4 finished in 2.3 seconds.
+## Chain 1 finished in 2.0 seconds.
+## Chain 4 finished in 2.0 seconds.
 ## 
 ## All 4 chains finished successfully.
-## Mean chain execution time: 2.3 seconds.
-## Total execution time: 2.4 seconds.
+## Mean chain execution time: 2.0 seconds.
+## Total execution time: 2.2 seconds.
 ```
 
 ```r
@@ -194,7 +194,7 @@ fit$cmdstan_diagnose()
 ```
 
 ```
-## Processing csv files: /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-2-24891e.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-3-24891e.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-4-24891e.csv
+## Processing csv files: /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-1-7991bf.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-2-7991bf.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-3-7991bf.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-4-7991bf.csv
 ## 
 ## Checking sampler transitions treedepth.
 ## Treedepth satisfactory for all transitions.
@@ -238,89 +238,89 @@ gelman_fit = gelman_model$sample(model_data, parallel_chains=4, seed=19920908 )
 ## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
-## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
 ## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
 ## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
 ## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
-## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 2 finished in 4.2 seconds.
 ## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-## Chain 2 finished in 4.3 seconds.
-## Chain 3 finished in 4.2 seconds.
+## Chain 3 finished in 4.3 seconds.
 ## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 finished in 4.4 seconds.
@@ -339,7 +339,7 @@ yrep = as_draws_matrix(gelman_fit$draws('yppc'))[1:100, ]
 ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
 ```
 
-![plot of chunk model-check-1](figure/model-check-1-1.png)
+![plot of chunk gelman-model-ppc](figure/gelman-model-ppc-1.png)
 
 
 The model which uses the raw differences looks much much better, though not perfect.
@@ -347,17 +347,11 @@ The model which uses the raw differences looks much much better, though not perf
 
 ```r
 yrep = as_draws_matrix(fit$draws('yppc'))[1:100, ]
-```
 
-```
-## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
-```
-
-```r
 ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
+![plot of chunk my-model-ppc](figure/my-model-ppc-1.png)
 
 The reason the square root model over estimates the draws is because squaring a number smaller than 1 results in a smaller number smaller than 1. If the simulated score differential is smaller than 0.707 in absolute value, then squaring it make it smaller than 0.5 and hence the rounding (I round because scores are discrete) will pull it toward 0.
 
@@ -370,21 +364,7 @@ Speaking of draws, this model still does not handle draws well.  If one were to 
 # A priori, the result of the match should be P(A wins) = P(B wins) = P(Draw) = 1/3
 # The model gets close, but even under ideal circumstances can not achieve this
 sigma_y = fit$draws('sigma_y')
-```
-
-```
-## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
-```
-
-```r
 df = fit$draws('df')
-```
-
-```
-## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
-```
-
-```r
 ppc_draws = round(rt(length(sigma_y), df)*sigma_y)
 ppc_result = case_when(ppc_draws>0~'Team A Wins', ppc_draws<0~'Team B Wins', T~'Draw')
 prop.table(table(ppc_result))
@@ -393,7 +373,7 @@ prop.table(table(ppc_result))
 ```
 ## ppc_result
 ##        Draw Team A Wins Team B Wins 
-##     0.26575     0.36650     0.36775
+##     0.27150     0.37625     0.35225
 ```
 
 
@@ -415,7 +395,7 @@ fit$draws('yppc') %>%
 ```
 
 ```
-## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
+## [1] 0.9427481
 ```
 
 Finally, what about predictive ability?  Mind you, any metrics computed here are essentially training performance, but hey good to check the model is learning something right? Let me make a couple little functions to handle some predictions we we might want to make.
@@ -423,29 +403,9 @@ Finally, what about predictive ability?  Mind you, any metrics computed here are
 
 ```r
 a = fit$draws('a') %>% as_draws_df
-```
-
-```
-## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
-```
-
-```r
 sigma_y = fit$draws('sigma_y')
-```
-
-```
-## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
-```
-
-```r
 est_df = fit$draws('df')
-```
 
-```
-## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
-```
-
-```r
 # Given two country names (e.g. Italy and Turkey),
 # extract goal differential posterior draws from model
 goal_diff = function(teamA, teamB, do_round=T){
@@ -559,6 +519,6 @@ group_plot = plot_data %>%
 group_plot
 ```
 
-![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
 
 

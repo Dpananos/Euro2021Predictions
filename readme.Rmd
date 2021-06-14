@@ -102,7 +102,7 @@ Gelman provides a good rationale, but I find when I use this model then there is
 Let's fit this model and do some posterior predictive checking.  You can see below that score differentials of 0 (draws) are far too prevelant from the model.  The result is a model which gives 50% probability to draws even though about 1 in 7 games end in a draw.
 
 
-```{r model-check-1}
+```{r gelman-model-ppc}
 gelman_model = model = cmdstan_model('models/euro_model_prior_scores_estimated_df.stan')
 gelman_fit = gelman_model$sample(model_data, parallel_chains=4, seed=19920908 )
 
@@ -115,7 +115,7 @@ ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
 
 The model which uses the raw differences looks much much better, though not perfect.
 
-```{r}
+```{r my-model-ppc}
 yrep = as_draws_matrix(fit$draws('yppc'))[1:100, ]
 
 ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
