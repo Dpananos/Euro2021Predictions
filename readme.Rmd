@@ -126,10 +126,15 @@ The reason the square root model over estimates the draws is because squaring a 
 Speaking of draws, this model still does not handle draws well.  If one were to guess what the outcome of a game might be (a given team wins, loses, draws) then the most uncertain approach would be to make all outcomes equiprobable.  In the most charitable of cases (we know both teams latent abilities perfectly and $a_i-a_j=0$) the highest P(draw) can ever be is between 25% and 27%.
 
 ```{r}
+# Generate draws from the posterior predictive when a_i - a_j=0
+# i.e when two teams have identical ability.
+# A priori, the result of the match should be P(A wins) = P(B wins) = P(Draw) = 1/3
+# The model gets close, but even under ideal circumstances can not achieve this
 sigma_y = fit$draws('sigma_y')
 df = fit$draws('df')
-
-prop.table(table(round(rt(length(sigma_y), df)*sigma_y)))
+ppc_draws = round(rt(length(sigma_y), df)*sigma_y)
+ppc_result = case_when(ppc_draws>0~'Team A Wins', ppc_draws<0~'Team B Wins', T~'Draw')
+prop.table(table(ppc_result))
 ```
 
 
@@ -138,7 +143,7 @@ This means a model can't give large probability to a draw happening, and it can'
 What about coverage? What proportion of qualifying games have a score differential captured by a credible interval?  About 95% of 95% credible intervals capture the score differential (nice!) but I this is unsurprising.  I would be more concerned if this was not the case.  Andrew Gelman says something similar in his blog post.
 
 ```{r}
-
+# How many score differentials in the data are captured by the model?
 fit$draws('yppc') %>% 
   spread_draws(yppc[i]) %>% 
   median_qi() %>% 
@@ -159,10 +164,12 @@ a = fit$draws('a') %>% as_draws_df
 sigma_y = fit$draws('sigma_y')
 est_df = fit$draws('df')
 
+# Given two country names (e.g. Italy and Turkey),
+# extract goal differential posterior draws from model
 goal_diff = function(teamA, teamB, do_round=T){
   set.seed(0)
-  ixa = match(teamA, str_to_title(teams))
-  ixb = match(teamB, str_to_title(teams))
+  ixa = match(teamA, teams)
+  ixb = match(teamB, teams)
   ai = a[, ixa]
   aj = a[, ixb]
   random_outcome = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
@@ -176,11 +183,13 @@ goal_diff = function(teamA, teamB, do_round=T){
   
 }
 
+# Estimate the probaility teamA beats teamB
 prob_win = function(teamA, teamB){
   random_outcome = goal_diff(teamA, teamB)
   mean(random_outcome>0)
 }
 
+# Compute P(Team A wins), P(Team B wins), P(Draw) for two teams
 predict = function(teamA, teamB){
   gd = goal_diff(teamA, teamB)
   outcome_space = tibble(outcome = c('A Wins', 'B Wins', 'Draw'),
@@ -202,10 +211,12 @@ predict = function(teamA, teamB){
 Now, let's see if we can predict the winner in the training data.  Not being able to do this is a huge red flag.
 
 ```{r}
+# Compute the probability team 1 wins in our training data
 yhat = map2_dbl(euro_data$team1, euro_data$team2, prob_win)
+# In which matches did team 1 actually win?
 y = as.integer((score1>score2))
 
-multiclass.roc(y, yhat)
+auc(multiclass.roc(y, yhat))
 ```
 On the training data, the model achieves an AUC of 0.918.  That's great, but no reason to bet the house on anything because remember this is training data.
 

@@ -347,11 +347,17 @@ The model which uses the raw differences looks much much better, though not perf
 
 ```r
 yrep = as_draws_matrix(fit$draws('yppc'))[1:100, ]
+```
 
+```
+## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
+```
+
+```r
 ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
 
 The reason the square root model over estimates the draws is because squaring a number smaller than 1 results in a smaller number smaller than 1. If the simulated score differential is smaller than 0.707 in absolute value, then squaring it make it smaller than 0.5 and hence the rounding (I round because scores are discrete) will pull it toward 0.
 
@@ -359,22 +365,35 @@ Speaking of draws, this model still does not handle draws well.  If one were to 
 
 
 ```r
+# Generate draws from the posterior predictive when a_i - a_j=0
+# i.e when two teams have identical ability.
+# A priori, the result of the match should be P(A wins) = P(B wins) = P(Draw) = 1/3
+# The model gets close, but even under ideal circumstances can not achieve this
 sigma_y = fit$draws('sigma_y')
+```
+
+```
+## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
+```
+
+```r
 df = fit$draws('df')
-
-prop.table(table(round(rt(length(sigma_y), df)*sigma_y)))
 ```
 
 ```
-## 
-##      -9      -8      -6      -5      -4 
-## 0.00025 0.00025 0.00175 0.00275 0.01225 
-##      -3      -2      -1       0       1 
-## 0.03850 0.10975 0.20225 0.26575 0.22025 
-##       2       3       4       5       6 
-## 0.09600 0.03375 0.01050 0.00450 0.00075 
-##       7 
-## 0.00075
+## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
+```
+
+```r
+ppc_draws = round(rt(length(sigma_y), df)*sigma_y)
+ppc_result = case_when(ppc_draws>0~'Team A Wins', ppc_draws<0~'Team B Wins', T~'Draw')
+prop.table(table(ppc_result))
+```
+
+```
+## ppc_result
+##        Draw Team A Wins Team B Wins 
+##     0.26575     0.36650     0.36775
 ```
 
 
@@ -384,6 +403,7 @@ What about coverage? What proportion of qualifying games have a score differenti
 
 
 ```r
+# How many score differentials in the data are captured by the model?
 fit$draws('yppc') %>% 
   spread_draws(yppc[i]) %>% 
   median_qi() %>% 
@@ -395,7 +415,7 @@ fit$draws('yppc') %>%
 ```
 
 ```
-## [1] 0.9427481
+## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
 ```
 
 Finally, what about predictive ability?  Mind you, any metrics computed here are essentially training performance, but hey good to check the model is learning something right? Let me make a couple little functions to handle some predictions we we might want to make.
@@ -403,13 +423,35 @@ Finally, what about predictive ability?  Mind you, any metrics computed here are
 
 ```r
 a = fit$draws('a') %>% as_draws_df
-sigma_y = fit$draws('sigma_y')
-est_df = fit$draws('df')
+```
 
+```
+## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
+```
+
+```r
+sigma_y = fit$draws('sigma_y')
+```
+
+```
+## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
+```
+
+```r
+est_df = fit$draws('df')
+```
+
+```
+## Error in read_cmdstan_csv(files = self$output_files(include_failed = FALSE), : Assertion on 'files' failed: File does not exist: '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv'.
+```
+
+```r
+# Given two country names (e.g. Italy and Turkey),
+# extract goal differential posterior draws from model
 goal_diff = function(teamA, teamB, do_round=T){
   set.seed(0)
-  ixa = match(teamA, str_to_title(teams))
-  ixb = match(teamB, str_to_title(teams))
+  ixa = match(teamA, teams)
+  ixb = match(teamB, teams)
   ai = a[, ixa]
   aj = a[, ixb]
   random_outcome = (ai - aj) + rt(nrow(ai-ai), est_df)*sigma_y
@@ -423,11 +465,13 @@ goal_diff = function(teamA, teamB, do_round=T){
   
 }
 
+# Estimate the probaility teamA beats teamB
 prob_win = function(teamA, teamB){
   random_outcome = goal_diff(teamA, teamB)
   mean(random_outcome>0)
 }
 
+# Compute P(Team A wins), P(Team B wins), P(Draw) for two teams
 predict = function(teamA, teamB){
   gd = goal_diff(teamA, teamB)
   outcome_space = tibble(outcome = c('A Wins', 'B Wins', 'Draw'),
@@ -450,18 +494,15 @@ Now, let's see if we can predict the winner in the training data.  Not being abl
 
 
 ```r
+# Compute the probability team 1 wins in our training data
 yhat = map2_dbl(euro_data$team1, euro_data$team2, prob_win)
+# In which matches did team 1 actually win?
 y = as.integer((score1>score2))
 
-multiclass.roc(y, yhat)
+auc(multiclass.roc(y, yhat))
 ```
 
 ```
-## 
-## Call:
-## multiclass.roc.default(response = y, predictor = yhat)
-## 
-## Data: yhat with 2 levels of y: 0, 1.
 ## Multi-class area under the curve: 0.918
 ```
 On the training data, the model achieves an AUC of 0.918.  That's great, but no reason to bet the house on anything because remember this is training data.
@@ -518,6 +559,6 @@ group_plot = plot_data %>%
 group_plot
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png)
 
 
