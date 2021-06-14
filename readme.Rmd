@@ -33,7 +33,7 @@ I fit the model on [UEFA qualifying round data](https://www.uefa.com/european-qu
 
 Let's fit the model now.
 ```{r}
-knitr::opts_chunk$set(warnings = F, cache = T)
+knitr::opts_chunk$set(warning = F, cache = T, message = F)
 ```
 
 
@@ -257,7 +257,7 @@ group_plot = plot_data %>%
   guides(fill = F)
 
 
-  
+group_plot
 
 ```
 

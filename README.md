@@ -34,7 +34,7 @@ I fit the model on [UEFA qualifying round data](https://www.uefa.com/european-qu
 Let's fit the model now.
 
 ```r
-knitr::opts_chunk$set(warnings = F, cache = T)
+knitr::opts_chunk$set(warning = F, cache = T, message = F)
 ```
 
 
@@ -52,35 +52,12 @@ cmdstanr::register_knitr_engine(override = F)
 
 #Load in data
 euro_data = read_csv('data/qualifying_round_games.csv') 
-```
 
-```
-## Parsed with column specification:
-## cols(
-##   team1 = col_character(),
-##   score1 = col_double(),
-##   team2 = col_character(),
-##   score2 = col_double()
-## )
-```
-
-```r
 # Standardize the points data
 ranking_data = read_csv('data/rankings.csv') %>% 
                mutate(prior_score = as.numeric(scale(pts))) %>% 
                arrange(team)
-```
 
-```
-## Parsed with column specification:
-## cols(
-##   ranking = col_double(),
-##   team = col_character(),
-##   pts = col_double()
-## )
-```
-
-```r
 # extract data for model
 teams = ranking_data$team
 nteams = length(teams)
@@ -108,13 +85,6 @@ model_data = list(
 
 # Instantiate model and run sampling.
 model = cmdstan_model('models/euro_raw_dif.stan')
-```
-
-```
-## Model executable is up to date!
-```
-
-```r
 fit = model$sample(model_data, parallel_chains=4, seed=19920908, show_messages = F)
 ```
 
@@ -126,85 +96,85 @@ fit = model$sample(model_data, parallel_chains=4, seed=19920908, show_messages =
 ## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
-## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
-## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
-## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
-## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 2 finished in 2.2 seconds.
@@ -212,10 +182,10 @@ fit = model$sample(model_data, parallel_chains=4, seed=19920908, show_messages =
 ## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 1 finished in 2.3 seconds.
-## Chain 4 finished in 2.2 seconds.
+## Chain 4 finished in 2.3 seconds.
 ## 
 ## All 4 chains finished successfully.
-## Mean chain execution time: 2.2 seconds.
+## Mean chain execution time: 2.3 seconds.
 ## Total execution time: 2.4 seconds.
 ```
 
@@ -224,7 +194,7 @@ fit$cmdstan_diagnose()
 ```
 
 ```
-## Processing csv files: /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106131940-1-2a0bd8.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106131940-2-2a0bd8.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106131940-3-2a0bd8.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106131940-4-2a0bd8.csv
+## Processing csv files: /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-1-24891e.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-2-24891e.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-3-24891e.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpilUtyt/euro_raw_dif-202106132131-4-24891e.csv
 ## 
 ## Checking sampler transitions treedepth.
 ## Treedepth satisfactory for all transitions.
@@ -258,207 +228,108 @@ Let's fit this model and do some posterior predictive checking.  You can see bel
 
 ```r
 gelman_model = model = cmdstan_model('models/euro_model_prior_scores_estimated_df.stan')
-```
-
-```
-## Model executable is up to date!
-```
-
-```r
 gelman_fit = gelman_model$sample(model_data, parallel_chains=4, seed=19920908 )
 ```
 
 ```
 ## Running MCMC with 4 parallel chains...
 ## 
-## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup)
-```
-
-```
-## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-```
-
-```
-## Chain 1 Exception: student_t_lpdf: Scale parameter is inf, but must be positive finite! (in '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/Rtmpl7hzAz/model-11be840a6baff.stan', line 40, column 4 to column 66)
-```
-
-```
-## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-```
-
-```
-## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-```
-
-```
-## Chain 1
-```
-
-```
-## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup)
-```
-
-```
-## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-```
-
-```
-## Chain 2 Exception: student_t_lpdf: Degrees of freedom parameter is inf, but must be positive finite! (in '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/Rtmpl7hzAz/model-11be840a6baff.stan', line 40, column 4 to column 66)
-```
-
-```
-## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-```
-
-```
-## Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-```
-
-```
-## Chain 2
-```
-
-```
-## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup)
-```
-
-```
-## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-```
-
-```
-## Chain 3 Exception: student_t_lpdf: Degrees of freedom parameter is inf, but must be positive finite! (in '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/Rtmpl7hzAz/model-11be840a6baff.stan', line 40, column 4 to column 66)
-```
-
-```
-## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-```
-
-```
-## Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-```
-
-```
-## Chain 3
-```
-
-```
-## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup)
-```
-
-```
-## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-```
-
-```
-## Chain 4 Exception: student_t_lpdf: Degrees of freedom parameter is inf, but must be positive finite! (in '/var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/Rtmpl7hzAz/model-11be840a6baff.stan', line 40, column 4 to column 66)
-```
-
-```
-## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-```
-
-```
-## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-```
-
-```
-## Chain 4
-```
-
-```
-## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
-## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
-## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
 ## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
 ## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
 ## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
-## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-## Chain 2 finished in 4.2 seconds.
-## Chain 3 finished in 4.3 seconds.
+## Chain 2 finished in 4.3 seconds.
+## Chain 3 finished in 4.2 seconds.
 ## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 finished in 4.4 seconds.
 ## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
-## Chain 1 finished in 4.5 seconds.
+## Chain 1 finished in 4.6 seconds.
 ## 
 ## All 4 chains finished successfully.
-## Mean chain execution time: 4.3 seconds.
-## Total execution time: 4.6 seconds.
+## Mean chain execution time: 4.4 seconds.
+## Total execution time: 4.7 seconds.
 ```
 
 ```r
@@ -466,15 +337,6 @@ y = score1-score2
 yrep = as_draws_matrix(gelman_fit$draws('yppc'))[1:100, ]
 
 ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
-```
-
-```
-## Scale for 'x' is already present. Adding another scale for 'x',
-## which will replace the existing scale.
-```
-
-```
-## Warning: Removed 46 rows containing missing values (geom_pointrange).
 ```
 
 ![plot of chunk model-check-1](figure/model-check-1-1.png)
@@ -487,15 +349,6 @@ The model which uses the raw differences looks much much better, though not perf
 yrep = as_draws_matrix(fit$draws('yppc'))[1:100, ]
 
 ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
-```
-
-```
-## Scale for 'x' is already present. Adding another scale for 'x',
-## which will replace the existing scale.
-```
-
-```
-## Warning: Removed 5 rows containing missing values (geom_pointrange).
 ```
 
 ![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
@@ -514,10 +367,14 @@ prop.table(table(round(rt(length(sigma_y), df)*sigma_y)))
 
 ```
 ## 
-##     -14      -7      -6      -5      -4      -3      -2      -1 
-## 0.00025 0.00025 0.00150 0.00275 0.01325 0.03825 0.10925 0.20375 
-##       0       1       2       3       4       5       6       7 
-## 0.26550 0.21325 0.10125 0.03400 0.01125 0.00400 0.00125 0.00025
+##      -9      -8      -6      -5      -4 
+## 0.00025 0.00025 0.00175 0.00275 0.01225 
+##      -3      -2      -1       0       1 
+## 0.03850 0.10975 0.20225 0.26575 0.22025 
+##       2       3       4       5       6 
+## 0.09600 0.03375 0.01050 0.00450 0.00075 
+##       7 
+## 0.00075
 ```
 
 
@@ -535,14 +392,6 @@ fit$draws('yppc') %>%
          cov = (dif<.upper)&(dif>.lower)) %>% 
   pull(cov) %>% 
   mean
-```
-
-```
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
 ```
 
 ```
@@ -602,1066 +451,9 @@ Now, let's see if we can predict the winner in the training data.  Not being abl
 
 ```r
 yhat = map2_dbl(euro_data$team1, euro_data$team2, prob_win)
-```
-
-```
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-
-## Warning: Dropping 'draws_df' class as required metadata was removed.
-```
-
-```r
 y = as.integer((score1>score2))
 
 multiclass.roc(y, yhat)
-```
-
-```
-## Setting direction: controls < cases
 ```
 
 ```
@@ -1700,587 +492,7 @@ plot_data = full_join(groups, groups, by='group') %>%
   filter(i.x!=i.y) %>%
   mutate(p_x_win = map2_dbl(team.x, team.y, prob_win)) %>% 
   rename(Group = group)
-```
 
-```
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-
-## Warning: Problem with `mutate()` input `p_x_win`.
-## ℹ Dropping 'draws_df' class as required metadata was removed.
-## ℹ Input `p_x_win` is `map2_dbl(team.x, team.y, prob_win)`.
-```
-
-```r
 group_plot = plot_data %>% 
   ggplot(aes(team.y, team.x, fill = p_x_win))+
   geom_tile(size = 1, color = 'black')+
@@ -2301,6 +513,11 @@ group_plot = plot_data %>%
        fill = 'Win Probability',
        subtitle = 'Probability Team on y Axis Beats Team on x Axis')+
   guides(fill = F)
+
+
+group_plot
 ```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 
