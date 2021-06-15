@@ -26,7 +26,7 @@ Now, we need to place priors on $\sigma_a$, $\sigma_y$, $\nu$ and $\beta$ and we
 
 # Data
 
-Prior rankings are found [here](#Prior rankings using points here https://www.fifa.com/fifa-world-ranking/ranking-table/men/
+Prior rankings are found [here]( https://www.fifa.com/fifa-world-ranking/ranking-table/men/
 ).  There is a column called "total points" which I use rather than the ordinal.  The reason is because the difference between the team ranked 1 and the team ranked 3 may not necessarily be twice the difference between teams ranked 1 and 2.  The points *appears* to be a more faithful representation of how much better one team is than another, but if I'm being honest I'm not sure how that column is calculated or if I am right. I will leave that to the reader to decide.
 
 I fit the model on [UEFA qualifying round data](https://www.uefa.com/european-qualifiers/fixtures-results/#/dw/1276).  This makes the most sense to me, through granted the squads and coaches do not remain the same over time.  Using previous euro performance is dubious to me (though I do have qualifying data for euro 2016 so I could check).  Four years in between tournaments is a long time, and a lot has the potential to change.  Rather than jumping straight to the more complex model which includes time as an effect, I figured I would start with the simpler model and see how well it does this year.  If it does well, I can always extend it.
