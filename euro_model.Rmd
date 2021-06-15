@@ -18,11 +18,14 @@ cmdstanr::register_knitr_engine(override = F)
 
 #Load in data
 
-match_day_1 = read_xlsx('predictions/predictions.xlsx') %>% 
-              drop_na()
+match_day_1 = read_xlsx('predictions/predictions_day_1.xlsx') %>% 
+              drop_na() %>% 
+              mutate(match = map2_chr(team1, team2, ~c(.x, .y) %>% sort %>% paste(collapse = 'v.')))
 
+# COndition on match day 1 results
+euro_data = read_csv('data/qualifying_round_games.csv') %>% 
+            bind_rows(match_day_1)
 
-euro_data = read_csv('data/qualifying_round_games.csv') 
 ranking_data = read_csv('data/rankings.csv') %>% 
                mutate(prior_score = (pts - mean(pts))/sd(pts)) %>% 
                arrange(team)
@@ -128,17 +131,21 @@ groups = bind_rows(group_a_teams, group_b_teams, group_c_teams, group_d_teams, g
          mutate(i = seq_along(team))
 
 
+
 plot_data = full_join(groups, groups, by='group') %>% 
   filter(i.x!=i.y) %>%
-  mutate(p_x_win = map2_dbl(team.x, team.y, prob_win)) %>% 
-  rename(Group = group)
+  mutate(p_x_win = map2_dbl(team.x, team.y, prob_win),
+         match = map2_chr(team.x, team.y, ~c(.x, .y) %>% sort %>% paste(collapse = 'v.') )) %>% 
+  rename(Group = group)  %>% 
+  mutate(p_x_win = map2_dbl(match, p_x_win, ~if_else(.x %in% match_day_1$match, NaN, .y)))
+  
 
 group_plot = plot_data %>% 
   ggplot(aes(team.y, team.x, fill = p_x_win))+
   geom_tile(size = 1, color = 'black')+
   geom_text(aes(label = scales::percent(p_x_win, accuracy = 0.1)), color = if_else(plot_data$p_x_win<0.5, 'white','black' ), size = 6)+
   facet_wrap(~Group, scales = 'free', labeller = label_both)+
-  scale_fill_continuous(type='viridis',labels = scales::percent)+
+  scale_fill_continuous(type='viridis',labels = scales::percent, na.value = 'black')+
   theme(aspect.ratio = 1,
         panel.background = element_blank(),
         strip.background = element_rect(fill = 'black'),
@@ -151,7 +158,7 @@ group_plot = plot_data %>%
        x = '',
        title = 'Euro 2020',
        fill = 'Win Probability',
-       subtitle = 'Probability Team on y Axis Beats Team on x Axis')+
+       subtitle = 'Probability Team on y Axis Beats Team on x Axis Conditioned on First Round')+
   guides(fill = F)
 
 ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
@@ -164,33 +171,33 @@ ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
 ```{r match-day-1}
 # Match day 1
 group_stage_team_1 = c(
+  'Finland',
   'Turkey',
-  'Wales',
+  'Italy',
+  'Ukraine',
   'Denmark',
-  'Belgium',
-  'England',
-  'Austria',
   'Netherlands',
-  'Scotland',
-  'Poland',
-  'Spain',
+  'Sweden',
+  'Croatia',
+  'England',
   'Hungary',
-  'France'
+  'Portugal',
+  'Spain'
 )
 
 group_stage_team_2 = c(
-  'Italy',
-  'Switzerland',
-  'Finland',
   'Russia',
-  'Croatia',
+  'Wales',
+  'Switzerland',
   'North Macedonia',
-  'Ukraine',
-  'Czech',
+  'Belgium',
+  'Austria',
   'Slovakia',
-  'Sweden',
-  'Portugal',
-  'Germany'
+  'Czech',
+  'Scotland',
+  'France',
+  'Germany',
+  'Poland'
 )
   
 
@@ -200,24 +207,11 @@ tibble(
   matchday = 1
 ) %>% 
   mutate(predictions = map2(team1, team2, predict)) %>% 
-  unnest(predictions) %>% tail
-  write_csv('predictions/predictions.csv')
+  unnest(predictions) %>% 
+  write_csv('predictions/predictions_day_2.csv')
 
   
 
 ```
 
-
-
-```{r}
-df = read_xlsx('predictions/predictions.xlsx')
-
-yhat = select(df, `A Wins`:Draw) %>% as.matrix()
-y = df %>% 
-    mutate(y = case_when((score1>score2)~'A Wins', (score1==score2)~'Draw', T~'B Wins')) %>% 
-    pull(y) %>% 
-    factor(., levels = c('A Wins', 'B Wins', 'Draw'), ordered = F)
-
-pROC::multiclass.roc(y, yhat)
-```
 
