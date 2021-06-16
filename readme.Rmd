@@ -28,7 +28,7 @@ Now, we need to place priors on $\sigma_a$, $\sigma_y$, $\nu$ and $\beta$ and we
 
 Prior rankings are found [here](https://www.international-football.net/elo-ratings-table?year=2019&month=03&day=21&confed=UEFA&prev-year=&prev-month=06&prev-day=16). These are the football Elo ratings at the beginning of the qualifying games.
 
-I fit the model on [UEFA qualifying round data](https://www.uefa.com/european-qualifiers/fixtures-results/#/dw/1276).  This makes the most sense to me, through granted the squads and coaches do not remain the same over time.  Using previous euro performance is dubious to me (though I do have qualifying data for euro 2016 so I could check).  Four years in between tournaments is a long time, and a lot has the potential to change.  Rather than jumping straight to the more complex model which includes time as an effect, I figured I would start with the simpler model and see how well it does this year.  If it does well, I can always extend it.
+I fit the model on [UEFA qualifying round data](https://www.uefa.com/european-qualifiers/fixtures-results/#/dw/1276) and [UEFA Nations League data](https://www.uefa.com/uefanationsleague/fixtures-results/#/rd/2001189).  A few UEFA Nations League games were forfeited due to COVID19 and are recorded as 3-0 losses for the forfeitting team.  I don't use those games in the model since they do not reflect the data generating process.  Using this data makes the most sense to me, through granted the squads and coaches do not remain the same over time.  
 
 Let's fit the model now.
 ```{r}
@@ -49,10 +49,13 @@ cmdstanr::register_knitr_engine(override = F)
 
 #Load in data
 euro_data = read_csv('data/qualifying_round_games.csv') 
+uefa_nations = read_csv('data/uefa_nations_league_results.csv')
+
+euro_data = euro_data %>% bind_rows(uefa_nations)
 
 # Standardize the points data
 ranking_data = read_csv('data/rankings.csv') %>% 
-               mutate(prior_score = as.numeric(scale(pts))) %>% 
+               mutate(prior_score = as.numeric(scale(elo_march_2019))) %>% 
                arrange(team)
 
 # extract data for model
@@ -122,7 +125,7 @@ ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
 
 The reason the square root model over estimates the draws is because squaring a number smaller than 1 results in a smaller number smaller than 1. If the simulated score differential is smaller than 0.707 in absolute value, then squaring it make it smaller than 0.5 and hence the rounding (I round because scores are discrete) will pull it toward 0.
 
-Speaking of draws, this model still does not handle draws well.  If one were to guess what the outcome of a game might be (a given team wins, loses, draws) then the most uncertain approach would be to make all outcomes equiprobable.  In the most charitable of cases (we know both teams latent abilities perfectly and $a_i-a_j=0$) the highest P(draw) can ever be is between 25% and 27%.
+Speaking of draws, this model still does not handle draws well.  If one were to guess what the outcome of a game might be (a given team wins, loses, draws) then the most uncertain approach would be to make all outcomes equiprobable.  In the most charitable of cases (we know both teams latent abilities perfectly and $a_i-a_j=0$) the highest P(draw) can ever be is between 27% and 30%.
 
 ```{r}
 # Generate draws from the posterior predictive when a_i - a_j=0
@@ -139,11 +142,12 @@ prop.table(table(ppc_result))
 
 This means a model can't give large probability to a draw happening, and it can't say a draw is very unlikely to happen without putting too much confidence in one team winning.  This precludes statements like "A draw us unlikely to happen, but I am still uncertain as to who will win".  
 
-What about coverage? What proportion of qualifying games have a score differential captured by a credible interval?  About 95% of 95% credible intervals capture the score differential (nice!) but I this is unsurprising.  I would be more concerned if this was not the case.  Andrew Gelman says something similar in his blog post.
+What about coverage? What proportion of qualifying games have a score differential captured by a credible interval?  CLose to 95% of 95% credible intervals capture the score differential (nice!) but I this is unsurprising.  I would be more concerned if this was not the case.  Andrew Gelman says something similar in his blog post.
 
 ```{r}
 # How many score differentials in the data are captured by the model?
 fit$draws('yppc') %>% 
+  as_draws_df() %>% 
   spread_draws(yppc[i]) %>% 
   median_qi() %>% 
   bind_cols(euro_data) %>% 
@@ -151,6 +155,7 @@ fit$draws('yppc') %>%
          cov = (dif<.upper)&(dif>.lower)) %>% 
   pull(cov) %>% 
   mean
+
 
 
 ```
@@ -217,7 +222,7 @@ y = as.integer((score1>score2))
 
 auc(multiclass.roc(y, yhat))
 ```
-On the training data, the model achieves an AUC of 0.918.  That's great, but no reason to bet the house on anything because remember this is training data.
+On the training data, the model achieves an AUC of .8787  That's great, but no reason to bet the house on anything because remember this is training data.
 
 Ok, that is enough model checking.  I understand the limitations enough to say "hey, let's have some fun".
 

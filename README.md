@@ -28,7 +28,7 @@ Now, we need to place priors on $\sigma_a$, $\sigma_y$, $\nu$ and $\beta$ and we
 
 Prior rankings are found [here](https://www.international-football.net/elo-ratings-table?year=2019&month=03&day=21&confed=UEFA&prev-year=&prev-month=06&prev-day=16). These are the football Elo ratings at the beginning of the qualifying games.
 
-I fit the model on [UEFA qualifying round data](https://www.uefa.com/european-qualifiers/fixtures-results/#/dw/1276).  This makes the most sense to me, through granted the squads and coaches do not remain the same over time.  Using previous euro performance is dubious to me (though I do have qualifying data for euro 2016 so I could check).  Four years in between tournaments is a long time, and a lot has the potential to change.  Rather than jumping straight to the more complex model which includes time as an effect, I figured I would start with the simpler model and see how well it does this year.  If it does well, I can always extend it.
+I fit the model on [UEFA qualifying round data](https://www.uefa.com/european-qualifiers/fixtures-results/#/dw/1276) and [UEFA Nations League data](https://www.uefa.com/uefanationsleague/fixtures-results/#/rd/2001189).  A few UEFA Nations League games were forfeited due to COVID19 and are recorded as 3-0 losses for the forfeitting team.  I don't use those games in the model since they do not reflect the data generating process.  Using this data makes the most sense to me, through granted the squads and coaches do not remain the same over time.  
 
 Let's fit the model now.
 
@@ -51,10 +51,13 @@ cmdstanr::register_knitr_engine(override = F)
 
 #Load in data
 euro_data = read_csv('data/qualifying_round_games.csv') 
+uefa_nations = read_csv('data/uefa_nations_league_results.csv')
+
+euro_data = euro_data %>% bind_rows(uefa_nations)
 
 # Standardize the points data
 ranking_data = read_csv('data/rankings.csv') %>% 
-               mutate(prior_score = as.numeric(scale(pts))) %>% 
+               mutate(prior_score = as.numeric(scale(elo_march_2019))) %>% 
                arrange(team)
 
 # extract data for model
@@ -91,101 +94,101 @@ fit = model$sample(model_data, parallel_chains=4, seed=19920908, show_messages =
 ## Running MCMC with 4 parallel chains...
 ## 
 ## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
 ## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
 ## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
-## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
 ## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
-## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
 ## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
-## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
 ## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
-## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
-## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
-## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
 ## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
 ## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
-## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
 ## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
-## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
-## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
 ## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
 ## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
 ## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
-## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
-## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
 ## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
 ## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
 ## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
-## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
-## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
 ## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
-## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
 ## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
-## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
-## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
 ## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
 ## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
 ## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
-## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
-## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
 ## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
-## Chain 2 finished in 2.0 seconds.
-## Chain 3 finished in 2.0 seconds.
+## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
 ## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
-## Chain 1 finished in 2.0 seconds.
-## Chain 4 finished in 2.0 seconds.
+## Chain 1 finished in 1.1 seconds.
+## Chain 2 finished in 1.1 seconds.
+## Chain 4 finished in 1.1 seconds.
+## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+## Chain 3 finished in 1.2 seconds.
 ## 
 ## All 4 chains finished successfully.
-## Mean chain execution time: 2.0 seconds.
-## Total execution time: 2.2 seconds.
+## Mean chain execution time: 1.1 seconds.
+## Total execution time: 1.2 seconds.
 ```
 
 ```r
@@ -193,7 +196,12 @@ fit$cmdstan_diagnose()
 ```
 
 ```
-## Processing csv files: /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-1-7991bf.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-2-7991bf.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-3-7991bf.csv, /var/folders/bp/7wzcfkhj67l2f8d9mlr4zytc0000gn/T/RtmpvCgGkH/euro_raw_dif-202106132147-4-7991bf.csv
+## Running bin/diagnose \
+##   /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-1-664dfc.csv \
+##   /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-2-664dfc.csv \
+##   /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-3-664dfc.csv \
+##   /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-4-664dfc.csv
+## Processing csv files: /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-1-664dfc.csv, /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-2-664dfc.csv, /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-3-664dfc.csv, /var/folders/jg/l5d_63291cz8t8jgb4ttj1vc0000gn/T/RtmpRaaOFZ/euro_raw_dif-202106161316-4-664dfc.csv
 ## 
 ## Checking sampler transitions treedepth.
 ## Treedepth satisfactory for all transitions.
@@ -354,7 +362,7 @@ ppc_bars(y, yrep, prob=0.95)+xlim(-10, 10)
 
 The reason the square root model over estimates the draws is because squaring a number smaller than 1 results in a smaller number smaller than 1. If the simulated score differential is smaller than 0.707 in absolute value, then squaring it make it smaller than 0.5 and hence the rounding (I round because scores are discrete) will pull it toward 0.
 
-Speaking of draws, this model still does not handle draws well.  If one were to guess what the outcome of a game might be (a given team wins, loses, draws) then the most uncertain approach would be to make all outcomes equiprobable.  In the most charitable of cases (we know both teams latent abilities perfectly and $a_i-a_j=0$) the highest P(draw) can ever be is between 25% and 27%.
+Speaking of draws, this model still does not handle draws well.  If one were to guess what the outcome of a game might be (a given team wins, loses, draws) then the most uncertain approach would be to make all outcomes equiprobable.  In the most charitable of cases (we know both teams latent abilities perfectly and $a_i-a_j=0$) the highest P(draw) can ever be is between 27% and 30%.
 
 
 ```r
@@ -372,18 +380,19 @@ prop.table(table(ppc_result))
 ```
 ## ppc_result
 ##        Draw Team A Wins Team B Wins 
-##     0.27150     0.37625     0.35225
+##     0.28575     0.37050     0.34375
 ```
 
 
 This means a model can't give large probability to a draw happening, and it can't say a draw is very unlikely to happen without putting too much confidence in one team winning.  This precludes statements like "A draw us unlikely to happen, but I am still uncertain as to who will win".  
 
-What about coverage? What proportion of qualifying games have a score differential captured by a credible interval?  About 95% of 95% credible intervals capture the score differential (nice!) but I this is unsurprising.  I would be more concerned if this was not the case.  Andrew Gelman says something similar in his blog post.
+What about coverage? What proportion of qualifying games have a score differential captured by a credible interval?  CLose to 95% of 95% credible intervals capture the score differential (nice!) but I this is unsurprising.  I would be more concerned if this was not the case.  Andrew Gelman says something similar in his blog post.
 
 
 ```r
 # How many score differentials in the data are captured by the model?
 fit$draws('yppc') %>% 
+  as_draws_df() %>% 
   spread_draws(yppc[i]) %>% 
   median_qi() %>% 
   bind_cols(euro_data) %>% 
@@ -394,7 +403,7 @@ fit$draws('yppc') %>%
 ```
 
 ```
-## [1] 0.9427481
+## [1] 0.9333333
 ```
 
 Finally, what about predictive ability?  Mind you, any metrics computed here are essentially training performance, but hey good to check the model is learning something right? Let me make a couple little functions to handle some predictions we we might want to make.
@@ -462,9 +471,9 @@ auc(multiclass.roc(y, yhat))
 ```
 
 ```
-## Multi-class area under the curve: 0.918
+## Multi-class area under the curve: 0.8498
 ```
-On the training data, the model achieves an AUC of 0.918.  That's great, but no reason to bet the house on anything because remember this is training data.
+On the training data, the model achieves an AUC of .8787  That's great, but no reason to bet the house on anything because remember this is training data.
 
 Ok, that is enough model checking.  I understand the limitations enough to say "hey, let's have some fun".
 
@@ -518,6 +527,6 @@ group_plot = plot_data %>%
 group_plot
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-1.png)
 
 
