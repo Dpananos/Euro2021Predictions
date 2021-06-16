@@ -23,6 +23,7 @@ match_day_1 = read_xlsx('predictions/predictions_day_1.xlsx') %>%
 
 # COndition on match day 1 results
 euro_data = read_csv('data/qualifying_round_games.csv') %>% 
+            bind_rows(uefa_nations) %>% 
             bind_rows(match_day_1)
 
 ranking_data = read_csv('data/rankings.csv') %>% 
@@ -75,7 +76,6 @@ fit$draws('a') %>%
   mean_qi %>% 
   bind_cols(ranking_data) %>% 
   arrange(desc(elo_march_2019)) %>% 
-  head(10) %>% 
   ggplot(aes(a, fct_reorder(team, a)))+
   geom_point()
 ```
@@ -175,7 +175,7 @@ group_plot = plot_data %>%
        subtitle = 'Probability Team on y Axis Beats Team on x Axis Conditioned on First Round')+
   guides(fill = F)
 
-ggsave('without_uefa_group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
+ggsave('witho_group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
   
 
 ```
@@ -221,7 +221,7 @@ tibble(
   matchday = 1
 ) %>% 
   mutate(predictions = map2(team1, team2, predict)) %>% 
-  unnest(predictions) 
+  unnest(predictions) %>% 
   write_csv('predictions/predictions_day_2.csv')
 
   
