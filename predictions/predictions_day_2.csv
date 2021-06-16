@@ -1,13 +1,13 @@
-team1,team2,matchday,A Wins,B Wins,Draw
-Finland,Russia,1,0.26875,0.5215,0.20975
-Turkey,Wales,1,0.43075,0.34175,0.2275
-Italy,Switzerland,1,0.77375,0.0955,0.13075
-Ukraine,North Macedonia,1,0.66475,0.16675,0.1685
-Denmark,Belgium,1,0.1135,0.74375,0.14275
-Netherlands,Austria,1,0.53525,0.25325,0.2115
-Sweden,Slovakia,1,0.43525,0.33775,0.227
-Croatia,Czech,1,0.62225,0.1905,0.18725
-England,Scotland,1,0.9235,0.02825,0.04825
-Hungary,France,1,0.14525,0.6815,0.17325
-Portugal,Germany,1,0.389,0.38625,0.22475
-Spain,Poland,1,0.46825,0.31375,0.218
+team1,team2,matchday,draw,team1wins,team2wins,team1score,team2score,neitherwon,team1won,team2won,lossdraw,lossteam2,lossdraw2,loss
+Finland,Russia,1,0.21525,0.27275,0.512,0,1,0,0,1,0,0,0.669430654,0.669430654
+Turkey,Wales,1,0.23125,0.42675,0.342,,,,,,0,0,0,0
+Italy,Switzerland,1,0.12425,0.77725,0.0985,,,,,,0,0,0,0
+Ukraine,North Macedonia,1,0.16675,0.67375,0.1595,,,,,,0,0,0,0
+Denmark,Belgium,1,0.1305,0.1225,0.747,,,,,,0,0,0,0
+Netherlands,Austria,1,0.217,0.539,0.244,,,,,,0,0,0,0
+Sweden,Slovakia,1,0.22475,0.4345,0.34075,,,,,,0,0,0,0
+Croatia,Czech,1,0.17825,0.63425,0.1875,,,,,,0,0,0,0
+England,Scotland,1,0.051,0.92425,0.02475,,,,,,0,0,0,0
+Hungary,France,1,0.16925,0.141,0.68975,,,,,,0,0,0,0
+Portugal,Germany,1,0.22075,0.3875,0.39175,,,,,,0,0,0,0
+Spain,Poland,1,0.21625,0.473,0.31075,,,,,,0,0,0,0

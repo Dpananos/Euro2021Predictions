@@ -27,8 +27,10 @@ euro_data = read_csv('data/qualifying_round_games.csv') %>%
             bind_rows(match_day_1)
 
 ranking_data = read_csv('data/rankings.csv') %>% 
-               mutate(prior_score = (pts - mean(pts))/sd(pts)) %>% 
+               mutate(prior_score = (elo_march_2019 - mean(elo_march_2019))/sd(elo_march_2019)) %>% 
                arrange(team)
+
+
 # extract data for model
 teams = ranking_data$team
 nteams = length(teams)
@@ -67,6 +69,19 @@ model = cmdstan_model('models/euro_raw_dif.stan')
 fit = model$sample(model_data, parallel_chains=4, seed=19920908)
 ```
 
+```{r}
+fit$draws('a') %>% 
+  as_draws_df %>% 
+  spread_draws(a[i]) %>% 
+  mean_qi %>% 
+  bind_cols(ranking_data) %>% 
+  arrange(desc(elo_march_2019)) %>% 
+  head(10) %>% 
+  ggplot(aes(a, fct_reorder(team, a)))+
+  geom_point()
+```
+
+
 
 ```{r predict-funcs}
 
@@ -98,7 +113,7 @@ prob_win = function(teamA, teamB){
 
 predict = function(teamA, teamB){
   gd = goal_diff(teamA, teamB)
-  outcome_space = tibble(outcome = c('A Wins', 'B Wins', 'Draw'),
+  outcome_space = tibble(outcome = c('team1wins', 'team2wins', 'draw'),
                          result = c(1, -1, 0))
   
   gdr = case_when(gd<0~-1, gd>0~1, T~0)
