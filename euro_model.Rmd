@@ -13,10 +13,9 @@ library(viridis)
 library(pROC)
 cmdstanr::register_knitr_engine(override = F)
 
-#Prior rankings using points here https://www.fifa.com/fifa-world-ranking/ranking-table/men/
-
-
 #Load in data
+
+uefa_nations = read_csv('data/uefa_nations_league_results.csv')
 
 match_day_1 = read_xlsx('predictions/predictions_day_1.xlsx') %>% 
               drop_na() %>% 
@@ -176,7 +175,7 @@ group_plot = plot_data %>%
        subtitle = 'Probability Team on y Axis Beats Team on x Axis Conditioned on First Round')+
   guides(fill = F)
 
-ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
+ggsave('without_uefa_group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
   
 
 ```
@@ -222,7 +221,7 @@ tibble(
   matchday = 1
 ) %>% 
   mutate(predictions = map2(team1, team2, predict)) %>% 
-  unnest(predictions) %>% 
+  unnest(predictions) 
   write_csv('predictions/predictions_day_2.csv')
 
   
