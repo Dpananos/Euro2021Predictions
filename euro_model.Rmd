@@ -21,10 +21,15 @@ match_day_1 = read_xlsx('predictions/predictions_day_1.xlsx') %>%
               drop_na() %>% 
               mutate(match = map2_chr(team1, team2, ~c(.x, .y) %>% sort %>% paste(collapse = 'v.')))
 
+match_day_2 = read_xlsx('predictions/predictions_day_2.xlsx') %>% 
+              drop_na() %>% 
+              mutate(match = map2_chr(team1, team2, ~c(.x, .y) %>% sort %>% paste(collapse = 'v.')))
+
 # COndition on match day 1 results
 euro_data = read_csv('data/qualifying_round_games.csv') %>% 
             bind_rows(uefa_nations) %>% 
-            bind_rows(match_day_1)
+            bind_rows(match_day_1) %>% 
+            bind_rows(match_day_2)
 
 ranking_data = read_csv('data/rankings.csv') %>% 
                mutate(prior_score = (elo_march_2019 - mean(elo_march_2019))/sd(elo_march_2019)) %>% 
@@ -151,7 +156,7 @@ plot_data = full_join(groups, groups, by='group') %>%
   mutate(p_x_win = map2_dbl(team.x, team.y, prob_win),
          match = map2_chr(team.x, team.y, ~c(.x, .y) %>% sort %>% paste(collapse = 'v.') )) %>% 
   rename(Group = group)  %>% 
-  mutate(p_x_win = map2_dbl(match, p_x_win, ~if_else(.x %in% match_day_1$match, NaN, .y)))
+  mutate(p_x_win = map2_dbl(match, p_x_win, ~if_else(.x %in% c(match_day_1$match, match_day_2$match), NaN, .y)))
   
 
 group_plot = plot_data %>% 
@@ -172,10 +177,10 @@ group_plot = plot_data %>%
        x = '',
        title = 'Euro 2020',
        fill = 'Win Probability',
-       subtitle = 'Probability Team on y Axis Beats Team on x Axis Conditioned on First Round')+
+       subtitle = 'Probability Team on y Axis Beats Team on x Axis Conditioned on First Two Match Days')+
   guides(fill = F)
 
-ggsave('witho_group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
+ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
   
 
 ```
@@ -221,8 +226,7 @@ tibble(
   matchday = 1
 ) %>% 
   mutate(predictions = map2(team1, team2, predict)) %>% 
-  unnest(predictions) %>% 
-  write_csv('predictions/predictions_day_2.csv')
+  unnest(predictions)
 
   
 
