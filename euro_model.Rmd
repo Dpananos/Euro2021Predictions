@@ -25,11 +25,16 @@ match_day_2 = read_xlsx('predictions/predictions_day_2.xlsx') %>%
               drop_na() %>% 
               mutate(match = map2_chr(team1, team2, ~c(.x, .y) %>% sort %>% paste(collapse = 'v.')))
 
+match_day_3 = read_xlsx('predictions/predictions_day_3.xlsx') %>% 
+              drop_na() %>% 
+              mutate(match = map2_chr(team1, team2, ~c(.x, .y) %>% sort %>% paste(collapse = 'v.')))
+
 # COndition on match day 1 results
 euro_data = read_csv('data/qualifying_round_games.csv') %>% 
             bind_rows(uefa_nations) %>% 
             bind_rows(match_day_1) %>% 
-            bind_rows(match_day_2)
+            bind_rows(match_day_2) %>% 
+            bind_rows(match_day_3)
 
 ranking_data = read_csv('data/rankings.csv') %>% 
                mutate(prior_score = (elo_march_2019 - mean(elo_march_2019))/sd(elo_march_2019)) %>% 
@@ -129,7 +134,18 @@ predict = function(teamA, teamB){
     mutate(n = n/sum(n)) %>% 
     spread(outcome, n)
   
+}
 
+
+predict_no_draw = function(teamA, teamB){
+  
+  gd = goal_diff(teamA, teamB)
+  #No draws in round of 16
+  # This is a hack
+  gd = gd[gd!=0]
+
+  tibble(team1wins=mean(gd>0), team2wins=mean(gd<0))
+  
 }
 ```
 
@@ -187,49 +203,14 @@ ggsave('group_predictions.png', group_plot, dpi = 400, height = 10, width = 15)
 
 
 
-```{r match-day-1}
-# Match day 1
-group_stage_team_1 = c(
-  'Finland',
-  'Turkey',
-  'Italy',
-  'Ukraine',
-  'Denmark',
-  'Netherlands',
-  'Sweden',
-  'Croatia',
-  'England',
-  'Hungary',
-  'Portugal',
-  'Spain'
-)
+```{r round-of-16}
 
-group_stage_team_2 = c(
-  'Russia',
-  'Wales',
-  'Switzerland',
-  'North Macedonia',
-  'Belgium',
-  'Austria',
-  'Slovakia',
-  'Czech',
-  'Scotland',
-  'France',
-  'Germany',
-  'Poland'
-)
-  
+team1 = c('Wales','Italy','Netherlands','Belgium','Croatia','France', 'England', 'Sweden')
+team2 = c('Denmark','Austria','Czech','Portugal', 'Spain', 'Switzerland', 'Germany','Ukraine')
 
-tibble(
-  team1 = group_stage_team_1, 
-  team2 = group_stage_team_2,
-  matchday = 1
-) %>% 
-  mutate(predictions = map2(team1, team2, predict)) %>% 
-  unnest(predictions)
-
-  
-
+tibble(team1, team2) %>% 
+  mutate(preds = map2(team1, team2, predict_no_draw)) %>% 
+  unnest(preds) 
+  write_csv('predictions/ro16.csv')
 ```
-
 
